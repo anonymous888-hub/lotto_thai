@@ -42,7 +42,6 @@
             border-color: #6366f1;
         }
         
-        /* อนิเมชันตัวเลขตอนโหลดข้อมูลเข้า */
         .fade-in { animation: fadeIn 0.5s ease-in-out forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
@@ -138,8 +137,18 @@
                         </div>
                         <h2 class="text-xl font-bold text-slate-800">ระบบตรวจรางวัลอัตโนมัติ</h2>
                     </div>
-                    <textarea id="lottoInput" rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-5 text-xl tracking-widest text-center text-slate-700 font-medium input-glow transition duration-200 resize-none custom-scrollbar" placeholder="พิมพ์หรือวางเลขที่นี่ (เว้นวรรคได้)"></textarea>
-                    <button onclick="checkLottery()" class="w-full mt-4 bg-slate-800 hover:bg-slate-900 text-white font-semibold py-4 rounded-2xl shadow-lg transition duration-200">
+                    
+                    <textarea id="lottoInput" rows="4" 
+                              class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-5 text-xl tracking-widest text-center text-slate-700 font-medium input-glow transition duration-200 resize-none custom-scrollbar" 
+                              placeholder="พิมพ์หรือวางเลขที่นี่ (เว้นวรรคได้)"
+                              oninput="this.value = this.value.replace(/[^\d\s]/g, '');"
+                              onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); checkLottery(); }"></textarea>
+                    
+                    <div class="text-center mt-2 mb-2">
+                        <span class="text-xs text-slate-400">💡 กด <b>Enter</b> เพื่อตรวจทันที หรือ <b>Shift+Enter</b> เพื่อขึ้นบรรทัดใหม่</span>
+                    </div>
+
+                    <button onclick="checkLottery()" class="w-full mt-2 bg-slate-800 hover:bg-slate-900 text-white font-semibold py-4 rounded-2xl shadow-lg transition duration-200">
                         ดำเนินการตรวจสอบ
                     </button>
                 </div>
@@ -192,8 +201,6 @@
 
         async function loadData() {
             setStatus('syncing');
-            
-            // ใช้ AbortController เพื่อตั้ง Timeout ให้ API (ตัดจบถ้าเกิน 6 วินาที)
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 6000);
 
@@ -246,13 +253,11 @@
         }
 
         function updateUI() {
-            // Remove opacity classes to fade elements in
             document.getElementById('prize1').classList.remove('opacity-50');
             document.getElementById('last3f').classList.remove('opacity-50');
             document.getElementById('last3b').classList.remove('opacity-50');
             document.getElementById('last2').classList.remove('opacity-50');
 
-            // Add animation class
             document.getElementById('prize1').classList.add('fade-in');
             
             document.getElementById('drawDate').textContent = `งวดประจำวันที่ ${lottoData.date}`;
@@ -274,7 +279,6 @@
             renderGrid('prize4', lottoData.p4);
             renderGrid('prize5', lottoData.p5);
 
-            // คำนวณความน่าจะเป็นสำหรับสุ่มเลข
             const all = lottoData.p1 + lottoData.p2.join('') + lottoData.p3.join('') + lottoData.last2;
             for (let char of all) {
                 const idx = parseInt(char);
@@ -356,12 +360,11 @@
             }
             const el = document.getElementById(digits === 2 ? 'num2' : 'num3');
             el.classList.remove('fade-in');
-            void el.offsetWidth; // Trigger reflow
+            void el.offsetWidth;
             el.classList.add('fade-in');
             el.textContent = res;
         }
 
-        // เริ่มดึงข้อมูลทันทีที่โหลดหน้าเสร็จแบบไม่บล็อกการแสดงผล
         window.addEventListener('DOMContentLoaded', loadData);
     </script>
 </body>
