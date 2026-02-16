@@ -63,7 +63,9 @@
         .btn-secondary:hover { border-color: #667eea; color: #667eea; }
         
         /* Stats */
-        .stat-value { font-size: 2.5rem; font-weight: 700; color: #667eea; margin: 1rem 0; letter-spacing: 0.1em; }
+        .stat-value { font-size: 2.2rem; font-weight: 700; color: #667eea; margin: 0.25rem 0; letter-spacing: 0.1em; }
+        .stat-card { background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid #e5e7eb; transition: all 0.2s; }
+        .stat-card:hover { border-color: #667eea; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1); }
         
         /* Loading */
         .loading { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 9999; }
@@ -169,17 +171,19 @@
                 </div>
 
                 <div class="check-box">
-                    <h3>🎲 สุ่มเลขเด่น (อิงสถิติงวดล่าสุด)</h3>
-                    <div style="text-align: center;">
-                        <div style="margin-bottom: 1.5rem;">
-                            <div style="font-size: 1rem; color: #6b7280; font-weight: 500;">เลข 2 ตัว</div>
-                            <div class="stat-value" id="num2">--</div>
-                            <button class="btn btn-secondary" onclick="randomNumber(2)">สุ่มใหม่</button>
+                    <h3>📊 สถิติเลขเด่น (ย้อนหลัง 5 ปี)</h3>
+                    <div style="text-align: center; display: grid; gap: 0.75rem;">
+                        <div class="stat-card">
+                            <div style="font-size: 1rem; color: #6b7280; font-weight: 500;">ท้าย 2 ตัว ที่ออกบ่อยสุด</div>
+                            <div class="stat-value">79</div>
                         </div>
-                        <div>
-                            <div style="font-size: 1rem; color: #6b7280; font-weight: 500;">เลข 3 ตัว</div>
-                            <div class="stat-value" id="num3">---</div>
-                            <button class="btn btn-secondary" onclick="randomNumber(3)">สุ่มใหม่</button>
+                        <div class="stat-card">
+                            <div style="font-size: 1rem; color: #6b7280; font-weight: 500;">หน้า 3 ตัว ที่ออกบ่อยสุด</div>
+                            <div class="stat-value">285</div>
+                        </div>
+                        <div class="stat-card">
+                            <div style="font-size: 1rem; color: #6b7280; font-weight: 500;">ท้าย 3 ตัว ที่ออกบ่อยสุด</div>
+                            <div class="stat-value">578</div>
                         </div>
                     </div>
                 </div>
@@ -189,7 +193,6 @@
 
     <script>
         let currentDrawData = null;
-        let digitWeights = Array(10).fill().map((_, i) => ({ digit: i.toString(), weight: 1 }));
 
         // ฟังก์ชันช่วยเรียงเลขจากน้อยไปมาก
         const sortNumbers = (arr) => arr.sort((a, b) => parseInt(a) - parseInt(b));
@@ -264,17 +267,6 @@
             document.getElementById('prize3').innerHTML = renderPrizes(data.prize3);
             document.getElementById('prize4').innerHTML = renderPrizes(data.prize4);
             document.getElementById('prize5').innerHTML = renderPrizes(data.prize5);
-
-            // คำนวณความน่าจะเป็นเพื่อสุ่มเลขเด่น
-            const freq = {};
-            const allNumbers = data.prize1 + data.prize2.join('') + data.prize3.join('') + data.prize2Back;
-            for (let char of allNumbers) {
-                if(!isNaN(parseInt(char))) freq[char] = (freq[char] || 0) + 1;
-            }
-            digitWeights = Array(10).fill().map((_, i) => ({
-                digit: i.toString(),
-                weight: freq[i.toString()] || 1
-            }));
         }
 
         // ระบบตรวจหวย
@@ -335,20 +327,6 @@
                 html += '<div style="margin-top: 0.5rem; font-size: 1rem; color: #6b7280;">ลองใหม่อีกครั้งในงวดถัดไป ขอให้โชคดีครับ!</div>';
                 Swal.fire({ html, icon: 'error', confirmButtonColor: '#667eea' });
             }
-        }
-
-        // ระบบสุ่มเลข
-        function randomNumber(digits) {
-            let result = '';
-            for (let i = 0; i < digits; i++) {
-                const totalWeight = digitWeights.reduce((sum, w) => sum + w.weight, 0);
-                let random = Math.random() * totalWeight;
-                for (let w of digitWeights) {
-                    random -= w.weight;
-                    if (random <= 0) { result += w.digit; break; }
-                }
-            }
-            document.getElementById(digits === 2 ? 'num2' : 'num3').textContent = result;
         }
 
         // ข้อมูลออฟไลน์สำรองเผื่อเน็ตล่ม
