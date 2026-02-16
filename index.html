@@ -199,56 +199,44 @@
 
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 6000); // ตั้งเวลารอแค่ 6 วินาที
-                const targetUrl = encodeURIComponent('https://www.glo.or.th/api/lottery/getLatestLottery');
-                let rawData;
-
-                try {
-                    const res1 = await fetch(`https://api.allorigins.win/get?url=${targetUrl}&t=${Date.now()}`, { signal: controller.signal });
-                    if (!res1.ok) throw new Error();
-                    const json1 = await res1.json();
-                    rawData = JSON.parse(json1.contents);
-                } catch (e) {
-                    const res2 = await fetch(`https://api.codetabs.com/v1/proxy?quest=${targetUrl}`, { signal: controller.signal });
-                    rawData = await res2.json();
-                }
+                const timeoutId = setTimeout(() => controller.abort(), 8000); 
+                
+                // 🔥 เปลี่ยนมาใช้ API ของ Rayriffy (ตรง ไม่ต้องผ่าน Proxy ลดปัญหาค้าง)
+                const res = await fetch('https://lotto.api.rayriffy.com/latest', { signal: controller.signal });
+                if (!res.ok) throw new Error('Failed to fetch from Rayriffy');
+                
+                const rawData = await res.json();
                 clearTimeout(timeoutId);
 
-                let parsedData = parseGLOData(rawData);
-                
-                // ระบบดักจับ: ถ้าระบบ GLO API ดันส่งข้อมูลเก่า (1 ก.พ.) มาให้เรา
-                // จะสั่งให้กระโดดไปใช้ข้อมูล 16 ก.พ. ที่เรากรอกเตรียมไว้ทันที!
-                if (parsedData.date.includes("1 กุมภาพันธ์")) {
-                    throw new Error("GLO API data is outdated. Forcing manual 16 Feb data.");
-                }
-
-                currentDrawData = parsedData;
+                // แปลงข้อมูลจาก Format ของ Rayriffy
+                currentDrawData = parseRayriffyData(rawData);
                 displayData(currentDrawData);
 
                 document.getElementById('statusBadge').className = 'badge badge-live';
-                document.getElementById('statusBadge').textContent = '🟢 ดึงข้อมูล API อัตโนมัติสำเร็จ';
+                document.getElementById('statusBadge').textContent = '🟢 อัปเดตข้อมูลอัตโนมัติสำเร็จ';
 
             } catch (error) {
-                console.warn('API error or outdated data:', error.message);
-                // ดึงข้อมูลกรอกมือ 16 ก.พ. 69 มาใช้ทันที
+                console.warn('API error:', error.message);
+                // ถ้าทุกอย่างล่มจริงๆ ให้ใช้ข้อมูลออฟไลน์ 16 ก.พ. 69 สำรอง
                 useFallbackData();
             } finally {
                 loading.classList.remove('show');
             }
         }
 
-        function parseGLOData(apiData) {
-            const d = apiData.response.data;
+        // ตัวแกะกล่องข้อมูลจาก Rayriffy API
+        function parseRayriffyData(apiData) {
+            const res = apiData.response;
             return {
-                date: apiData.response.date,
-                prize1: d.first[0].number,
-                prize2: sortNumbers(d.second.map(i => i.number)),
-                prize3: sortNumbers(d.third.map(i => i.number)),
-                prize4: sortNumbers(d.fourth.map(i => i.number)),
-                prize5: sortNumbers(d.fifth.map(i => i.number)),
-                prize3Front: sortNumbers(d.last3f.map(i => i.number)),
-                prize3Back: sortNumbers(d.last3b.map(i => i.number)),
-                prize2Back: d.last2[0].number
+                date: res.date,
+                prize1: res.prizes.find(p => p.id === 'prizeFirst').number[0],
+                prize2: sortNumbers(res.prizes.find(p => p.id === 'prizeSecond').number),
+                prize3: sortNumbers(res.prizes.find(p => p.id === 'prizeThird').number),
+                prize4: sortNumbers(res.prizes.find(p => p.id === 'prizeFourth').number),
+                prize5: sortNumbers(res.prizes.find(p => p.id === 'prizeFifth').number),
+                prize3Front: sortNumbers(res.runningNumbers.find(p => p.id === 'runningNumberFrontThree').number),
+                prize3Back: sortNumbers(res.runningNumbers.find(p => p.id === 'runningNumberBackThree').number),
+                prize2Back: res.runningNumbers.find(p => p.id === 'runningNumberBackTwo').number[0]
             };
         }
 
@@ -341,9 +329,6 @@
             }
         }
 
-        // ==========================================
-        // อัปเดตข้อมูลแบบ Manual: วันที่ 16 ก.พ. 2569
-        // ==========================================
         function useFallbackData() {
             currentDrawData = {
                 date: "16 กุมภาพันธ์ 2569",
@@ -351,8 +336,6 @@
                 prize3Front: sortNumbers(["527","241"]),
                 prize3Back: sortNumbers(["578","169"]),
                 prize2Back: "07",
-                
-                // รางวัลที่ 2-5 ใช้ข้อมูล Mockup ขัดตาทัพก่อน ระหว่างรอ API รวบรวมข้อมูลเสร็จ
                 prize2: sortNumbers(["374502","048036","889775","679914","602910"]),
                 prize3: sortNumbers(["428751","586374","216443","479569","236455","592665","167591","319246","145551","893288"]),
                 prize4: sortNumbers(["542764","993587","613010","609198","326375","266256","391432","600759","275320","208769","538731","963842","246525","651287","710588","242893","771134","048178","604778","808593","718890","242652","192972","241852","427968","866166","287292","328346","297562","839220","633827","655598","287243","282059","695755","247143","796321","630109","377600","407126","755949","249030","870519","804105","469942","423483","350883","004427","811271","736797"]),
@@ -361,7 +344,7 @@
             displayData(currentDrawData);
 
             document.getElementById('statusBadge').className = 'badge badge-manual';
-            document.getElementById('statusBadge').textContent = '🟡 อัปเดตข้อมูลเร่งด่วน 16 ก.พ. (รองานย่อย)';
+            document.getElementById('statusBadge').textContent = '🟡 แสดงผลข้อมูล 16 ก.พ. สำรอง';
         }
 
         window.addEventListener('DOMContentLoaded', initApp);
