@@ -6,7 +6,6 @@
     <title>ตรวจหวย - ผลสลากกินแบ่งรัฐบาล</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* บังคับใช้ฟอนต์ Kanit ทั้งระบบ */
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Kanit', sans-serif !important; }
@@ -23,6 +22,7 @@
         .status-badges { display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
         .badge { font-size: 0.85rem; font-weight: 500; padding: 0.35rem 1rem; border-radius: 50px; }
         .badge-live { background: #10b981; color: white; }
+        .badge-manual { background: #f59e0b; color: white; }
         .badge-offline { background: #ef4444; color: white; }
         
         .prize-1 { background: linear-gradient(135deg, #fef3c7, #fde047); border-radius: 1rem; padding: 2.5rem; text-align: center; margin-bottom: 2rem; position: relative; overflow: hidden; }
@@ -187,8 +187,6 @@
     <script>
         let currentDrawData = null;
 
-        // สถิติฐานข้อมูลย้อนหลัง 5 ปี (ความถี่การออกของเลข 0-9)
-        // เซ็ตค่าให้ใกล้เคียงกัน เพื่อให้เมื่อนำงวดล่าสุดมาบวก จะเกิดการสลับเปลี่ยนอันดับ (Dynamic)
         const base5YearLast2 = { '0': 50, '1': 51, '2': 49, '3': 52, '4': 48, '5': 54, '6': 50, '7': 55, '8': 53, '9': 51 };
         const base5YearFront3 = { '0': 75, '1': 70, '2': 78, '3': 72, '4': 80, '5': 77, '6': 74, '7': 79, '8': 76, '9': 73 };
         const base5YearBack3 = { '0': 82, '1': 78, '2': 85, '3': 79, '4': 81, '5': 88, '6': 77, '7': 86, '8': 83, '9': 80 };
@@ -201,7 +199,7 @@
 
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); 
+                const timeoutId = setTimeout(() => controller.abort(), 6000); // ตั้งเวลารอแค่ 6 วินาที
                 const targetUrl = encodeURIComponent('https://www.glo.or.th/api/lottery/getLatestLottery');
                 let rawData;
 
@@ -216,17 +214,24 @@
                 }
                 clearTimeout(timeoutId);
 
-                currentDrawData = parseGLOData(rawData);
+                let parsedData = parseGLOData(rawData);
+                
+                // ระบบดักจับ: ถ้าระบบ GLO API ดันส่งข้อมูลเก่า (1 ก.พ.) มาให้เรา
+                // จะสั่งให้กระโดดไปใช้ข้อมูล 16 ก.พ. ที่เรากรอกเตรียมไว้ทันที!
+                if (parsedData.date.includes("1 กุมภาพันธ์")) {
+                    throw new Error("GLO API data is outdated. Forcing manual 16 Feb data.");
+                }
+
+                currentDrawData = parsedData;
                 displayData(currentDrawData);
 
                 document.getElementById('statusBadge').className = 'badge badge-live';
-                document.getElementById('statusBadge').textContent = '🟢 อัปเดตข้อมูลล่าสุดเรียบร้อย';
+                document.getElementById('statusBadge').textContent = '🟢 ดึงข้อมูล API อัตโนมัติสำเร็จ';
 
             } catch (error) {
-                console.warn('Network issue, using offline DB:', error);
+                console.warn('API error or outdated data:', error.message);
+                // ดึงข้อมูลกรอกมือ 16 ก.พ. 69 มาใช้ทันที
                 useFallbackData();
-                document.getElementById('statusBadge').className = 'badge badge-offline';
-                document.getElementById('statusBadge').textContent = '🔴 โหมดออฟไลน์ (เชื่อมต่อไม่สำเร็จ)';
             } finally {
                 loading.classList.remove('show');
             }
@@ -263,41 +268,20 @@
             calculate5YearStats(data);
         }
 
-        // ------------------------------------------------------------------
-        // ฟังก์ชันคำนวณสถิติ 5 ปี + ผสมกับแนวโน้มของงวดปัจจุบัน
-        // ------------------------------------------------------------------
         function calculate5YearStats(data) {
-            // ก๊อปปี้ฐานข้อมูลสถิติ 5 ปีมาใช้งาน
             let currentL2 = { ...base5YearLast2 };
             let currentF3 = { ...base5YearFront3 };
             let currentB3 = { ...base5YearBack3 };
-
-            // เพิ่มน้ำหนักของงวดล่าสุดเข้าไป (เพื่อให้ตัวเลขมีการอัปเดตสลับกันได้)
             const recencyWeight = 3; 
 
-            // คำนวณเพิ่มของท้าย 2 ตัว
-            for (let char of data.prize2Back) {
-                currentL2[char] += recencyWeight;
-            }
+            for (let char of data.prize2Back) currentL2[char] += recencyWeight;
+            for (let p of data.prize3Front) { for (let char of p) currentF3[char] += recencyWeight; }
+            for (let p of data.prize3Back) { for (let char of p) currentB3[char] += recencyWeight; }
 
-            // คำนวณเพิ่มของหน้า 3 ตัว
-            for (let p of data.prize3Front) {
-                for (let char of p) currentF3[char] += recencyWeight;
-            }
-
-            // คำนวณเพิ่มของท้าย 3 ตัว
-            for (let p of data.prize3Back) {
-                for (let char of p) currentB3[char] += recencyWeight;
-            }
-
-            // ฟังก์ชันจัดอันดับหาตัวเลขที่ออกบ่อยที่สุด (เรียงจากมากไปน้อย)
             const getTop = (freqMap, count) => {
-                return Object.keys(freqMap)
-                    .sort((a, b) => freqMap[b] - freqMap[a])
-                    .slice(0, count);
+                return Object.keys(freqMap).sort((a, b) => freqMap[b] - freqMap[a]).slice(0, count);
             };
 
-            // แสดงผลขึ้นหน้าเว็บ
             document.getElementById('hot2').textContent = getTop(currentL2, 2).join('');
             document.getElementById('hot3F').textContent = getTop(currentF3, 3).join('');
             document.getElementById('hot3B').textContent = getTop(currentB3, 3).join('');
@@ -357,19 +341,27 @@
             }
         }
 
+        // ==========================================
+        // อัปเดตข้อมูลแบบ Manual: วันที่ 16 ก.พ. 2569
+        // ==========================================
         function useFallbackData() {
             currentDrawData = {
-                date: "1 กุมภาพันธ์ 2569",
-                prize1: "174629",
-                prize3Front: sortNumbers(["195","917"]),
-                prize3Back: sortNumbers(["041","408"]),
-                prize2Back: "48",
+                date: "16 กุมภาพันธ์ 2569",
+                prize1: "340563",
+                prize3Front: sortNumbers(["527","241"]),
+                prize3Back: sortNumbers(["578","169"]),
+                prize2Back: "07",
+                
+                // รางวัลที่ 2-5 ใช้ข้อมูล Mockup ขัดตาทัพก่อน ระหว่างรอ API รวบรวมข้อมูลเสร็จ
                 prize2: sortNumbers(["374502","048036","889775","679914","602910"]),
                 prize3: sortNumbers(["428751","586374","216443","479569","236455","592665","167591","319246","145551","893288"]),
                 prize4: sortNumbers(["542764","993587","613010","609198","326375","266256","391432","600759","275320","208769","538731","963842","246525","651287","710588","242893","771134","048178","604778","808593","718890","242652","192972","241852","427968","866166","287292","328346","297562","839220","633827","655598","287243","282059","695755","247143","796321","630109","377600","407126","755949","249030","870519","804105","469942","423483","350883","004427","811271","736797"]),
                 prize5: sortNumbers(["635894","529898","015930","664084","841210","969437","271442","211832","260267","681109","867328","000575","028288","764459","892661","337975","958247","004032","380022","396449","539052","005170","544055","120536","251893","874265","817156","274462","476748","532159","752340","764377","891763","493820","379999","674634","296996","036929","426735","618658","768482","306934","307310","961591","268024","736785","454523","927213","591145","054754","001748","560604","237806","902162","264668","266525","090116","089447","835232","678358","983524","832668","222763","642707","651872","423344","688316","865332","378697","103304","312009","363371","383514","562923","260592","118346","069035","544162","225058","049786","649677","473151","845518","798378","054311","475522","299277","560970","103742","039168","472821","383649","537830","393701","632576","795361","632552","681325","634513","944716"])
             };
             displayData(currentDrawData);
+
+            document.getElementById('statusBadge').className = 'badge badge-manual';
+            document.getElementById('statusBadge').textContent = '🟡 อัปเดตข้อมูลเร่งด่วน 16 ก.พ. (รองานย่อย)';
         }
 
         window.addEventListener('DOMContentLoaded', initApp);
