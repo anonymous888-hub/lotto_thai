@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -140,9 +141,9 @@
                 </div>
 
                 <div class="check-box">
-                    <h3>📊 สถิติเลขเด่น (ย้อนหลัง 5 ปี)</h3>
+                    <h3>📊 เลขเด่นจากสถิติ (ย้อนหลัง 5 ปี)</h3>
                     <p style="font-size: 0.95rem; color: #6b7280; text-align: center; margin-bottom: 1.5rem;">
-                        ประมวลผลจากฐานข้อมูล 5 ปี + สุ่มเลขในกลุ่ม Top 5
+                        เลขที่มีคะแนนสถิติสูงสุดจากข้อมูล 5 ปี
                     </p>
                     <div style="text-align: center; display: grid; gap: 1rem;">
                         <div class="stat-card">
@@ -184,7 +185,6 @@
         const base5YearBack3 = { '0': 82, '1': 78, '2': 85, '3': 79, '4': 81, '5': 88, '6': 77, '7': 86, '8': 83, '9': 80 };
 
         async function initApp() {
-            // โหลดข้อมูลขึ้นหน้าเว็บทันที
             displayData(currentDrawData);
         }
 
@@ -210,29 +210,23 @@
             let currentB3 = { ...base5YearBack3 };
             const recencyWeight = 3; 
 
+            // เพิ่มน้ำหนักคะแนนจากงวดปัจจุบัน
             for (let char of data.prize2Back) currentL2[char] += recencyWeight;
             for (let p of data.prize3Front) { for (let char of p) currentF3[char] += recencyWeight; }
             for (let p of data.prize3Back) { for (let char of p) currentB3[char] += recencyWeight; }
 
-            // ดึง Top 5 ตัวที่คะแนนสถิติสูงสุดมาพักไว้ใน Pool
-            const getTopPool = (freqMap) => {
-                return Object.keys(freqMap).sort((a, b) => freqMap[b] - freqMap[a]).slice(0, 5);
+            // ฟังก์ชันหาเลขที่มีคะแนนสูงสุด (เลือกตัวที่ดีที่สุด)
+            const getBestDigits = (freqMap, count) => {
+                return Object.keys(freqMap)
+                    .sort((a, b) => freqMap[b] - freqMap[a])
+                    .slice(0, count)
+                    .join('');
             };
 
-            const poolL2 = getTopPool(currentL2);
-            const poolF3 = getTopPool(currentF3);
-            const poolB3 = getTopPool(currentB3);
-
-            // ฟังก์ชันสุ่มดึงเลขจาก Pool
-            const getRandomFromPool = (pool, count) => {
-                let shuffled = [...pool].sort(() => 0.5 - Math.random());
-                return shuffled.slice(0, count).join('');
-            };
-
-            // แสดงผลขึ้นหน้าเว็บ
-            document.getElementById('hot2').textContent = getRandomFromPool(poolL2, 2);
-            document.getElementById('hot3F').textContent = getRandomFromPool(poolF3, 3);
-            document.getElementById('hot3B').textContent = getRandomFromPool(poolB3, 3);
+            // แสดงเลขที่ดีที่สุดจากสถิติ
+            document.getElementById('hot2').textContent = getBestDigits(currentL2, 2);
+            document.getElementById('hot3F').textContent = getBestDigits(currentF3, 3);
+            document.getElementById('hot3B').textContent = getBestDigits(currentB3, 3);
         }
 
         function checkLottery() {
