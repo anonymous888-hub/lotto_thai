@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ตรวจหวย - ผลสลากกินแบ่งรัฐบาล (Historical API)</title>
+    <title>ตรวจหวย - ผลสลากกินแบ่งรัฐบาล (Ultimate Version)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -48,7 +48,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ปรับแต่ง Select Dropdown */
         select {
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -198,7 +197,7 @@
         let lottoData = null;
         let digitWeights = [];
 
-        // ฟังก์ชันช่วยเรียงลำดับตัวเลข
+        // ฟังก์ชันช่วยเรียงลำดับตัวเลขจากน้อยไปมาก
         const sortNumbers = (arr) => {
             return arr.sort((a, b) => parseInt(a) - parseInt(b));
         };
@@ -226,7 +225,6 @@
             }
         }
 
-        // ทำให้ Elements จางลงชั่วคราวระหว่างโหลด
         function preLoadUI() {
             const ids = ['prize1', 'last3f', 'last3b', 'last2', 'prize2', 'prize3', 'prize4', 'prize5'];
             ids.forEach(id => {
@@ -236,43 +234,49 @@
             });
         }
 
-        // ฟังก์ชันโหลดข้อมูล รองรับทั้ง GLO ล่าสุด และ Rayriffy ย้อนหลัง
+        // ฟังก์ชันดึงข้อมูลแบบอึด ทนทานต่อเซิร์ฟเวอร์ล่ม (10 วินาที Timeout + 2 Proxies)
         async function loadData(dateId = 'latest') {
             setStatus('syncing');
             preLoadUI();
             
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 6000);
+            const timeoutId = setTimeout(() => controller.abort(), 10000); 
 
             try {
                 if (dateId === 'latest') {
-                    // ดึงข้อมูลงวดล่าสุดจาก GLO
-                    const proxyUrl = 'https://api.allorigins.win/get?url=';
+                    let data = null;
                     const targetUrl = encodeURIComponent('https://www.glo.or.th/api/lottery/getLatestLottery');
-                    const response = await fetch(proxyUrl + targetUrl + `&t=${Date.now()}`, { signal: controller.signal });
+                    
+                    try {
+                        const res1 = await fetch(`https://api.allorigins.win/get?url=${targetUrl}&t=${Date.now()}`, { signal: controller.signal });
+                        if (!res1.ok) throw new Error('Proxy 1 failed');
+                        const json1 = await res1.json();
+                        data = JSON.parse(json1.contents);
+                    } catch (e1) {
+                        console.warn('Proxy 1 ล้มเหลว ลองใช้ Proxy 2...');
+                        const res2 = await fetch(`https://api.codetabs.com/v1/proxy?quest=${targetUrl}`, { signal: controller.signal });
+                        if (!res2.ok) throw new Error('Proxy 2 failed');
+                        data = await res2.json();
+                    }
+
                     clearTimeout(timeoutId);
-                    
-                    if (!response.ok) throw new Error('GLO API Error');
-                    const json = await response.json();
-                    const raw = JSON.parse(json.contents);
-                    const data = raw.response.data;
-                    
+                    const gloData = data.response ? data.response.data : data;
+
                     lottoData = {
-                        date: raw.response.date,
-                        p1: data.first[0].number,
-                        p2: sortNumbers(data.second.map(i => i.number)),
-                        p3: sortNumbers(data.third.map(i => i.number)),
-                        p4: sortNumbers(data.fourth.map(i => i.number)),
-                        p5: sortNumbers(data.fifth.map(i => i.number)),
-                        last3f: sortNumbers(data.last3f.map(i => i.number)),
-                        last3b: sortNumbers(data.last3b.map(i => i.number)),
-                        last2: data.last2[0].number
+                        date: data.response ? data.response.date : "งวดล่าสุด",
+                        p1: gloData.first[0].number,
+                        p2: sortNumbers(gloData.second.map(i => i.number)),
+                        p3: sortNumbers(gloData.third.map(i => i.number)),
+                        p4: sortNumbers(gloData.fourth.map(i => i.number)),
+                        p5: sortNumbers(gloData.fifth.map(i => i.number)),
+                        last3f: sortNumbers(gloData.last3f.map(i => i.number)),
+                        last3b: sortNumbers(gloData.last3b.map(i => i.number)),
+                        last2: gloData.last2[0].number
                     };
                     updateUI();
                     setStatus('online', 'glo');
 
                 } else {
-                    // ดึงข้อมูลงวดย้อนหลังผ่าน Rayriffy API
                     const response = await fetch(`https://lotto.api.rayriffy.com/${dateId}`, { signal: controller.signal });
                     clearTimeout(timeoutId);
                     
@@ -295,18 +299,20 @@
                     setStatus('online', 'rayriffy');
                 }
             } catch (error) {
-                console.warn('API Failed, using fallback.', error);
+                console.warn('API Failed:', error);
+                
                 if(dateId === 'latest' || dateId === '01022026') {
                     useFallback();
+                    Swal.fire({ title: 'โหมดออฟไลน์', text: 'ไม่สามารถดึงข้อมูลสดได้ชั่วคราว ระบบกำลังแสดงผลข้อมูลล่าสุดแทนครับ', icon: 'info', confirmButtonColor: '#94a3b8' });
                 } else {
-                    Swal.fire({ title: 'เชื่อมต่อล้มเหลว', text: 'ไม่สามารถดึงข้อมูลย้อนหลังงวดที่เลือกได้ในขณะนี้', icon: 'error', confirmButtonColor: '#4f46e5' });
+                    Swal.fire({ title: 'เซิร์ฟเวอร์ขัดข้อง', text: 'ไม่สามารถดึงข้อมูลย้อนหลังงวดที่เลือกได้ในขณะนี้ กรุณาลองใหม่ภายหลัง', icon: 'error', confirmButtonColor: '#4f46e5' });
                     document.getElementById('drawSelector').value = 'latest';
                     loadData('latest');
                 }
             }
         }
 
-        // ข้อมูลสำรองของงวด 1 กุมภาพันธ์ 2569 (แก้ไขให้เรียงลำดับแล้ว)
+        // ข้อมูลสำรอง (Fallback) งวด 1 ก.พ. 2569
         function useFallback() {
             const rawP2 = ["374502","048036","889775","679914","602910"];
             const rawP3 = ["428751","586374","216443","479569","236455","592665","167591","319246","145551","893288"];
@@ -314,10 +320,8 @@
             const rawP5 = ["635894","529898","015930","664084","841210","969437","271442","211832","260267","681109","867328","000575","028288","764459","892661","337975","958247","004032","380022","396449","539052","005170","544055","120536","251893","874265","817156","274462","476748","532159","752340","764377","891763","493820","379999","674634","296996","036929","426735","618658","768482","306934","307310","961591","268024","736785","454523","927213","591145","054754","001748","560604","237806","902162","264668","266525","090116","089447","835232","678358","983524","832668","222763","642707","651872","423344","688316","865332","378697","103304","312009","363371","383514","562923","260592","118346","069035","544162","225058","049786","649677","473151","845518","798378","054311","475522","299277","560970","103742","039168","472821","383649","537830","393701","632576","795361","632552","681325","634513","944716"];
 
             lottoData = {
-                date: "1 กุมภาพันธ์ 2569",
-                p1: "174629",
-                p2: sortNumbers(rawP2), p3: sortNumbers(rawP3),
-                p4: sortNumbers(rawP4), p5: sortNumbers(rawP5),
+                date: "1 กุมภาพันธ์ 2569", p1: "174629",
+                p2: sortNumbers(rawP2), p3: sortNumbers(rawP3), p4: sortNumbers(rawP4), p5: sortNumbers(rawP5),
                 last3f: sortNumbers(["917", "195"]), last3b: sortNumbers(["408", "041"]), last2: "48"
             };
             
@@ -330,11 +334,10 @@
             ids.forEach(id => {
                 const el = document.getElementById(id);
                 el.classList.remove('opacity-50');
-                void el.offsetWidth; // Trigger reflow
+                void el.offsetWidth;
                 el.classList.add('fade-in');
             });
             
-            // อัปเดตข้อความวันที่ด้านบน
             document.getElementById('drawDate').textContent = `ข้อมูลของงวดประจำวันที่ ${lottoData.date}`;
             document.getElementById('prize1').textContent = lottoData.p1;
             document.getElementById('last3f').textContent = lottoData.last3f.join(' , ');
@@ -354,7 +357,6 @@
             renderGrid('prize4', lottoData.p4);
             renderGrid('prize5', lottoData.p5);
 
-            // รีเซ็ตน้ำหนักสถิติสำหรับงวดใหม่
             digitWeights = Array.from({length: 10}, (_, i) => ({ digit: i.toString(), weight: 1 }));
             const all = lottoData.p1 + lottoData.p2.join('') + lottoData.p3.join('') + lottoData.last2;
             for (let char of all) {
@@ -372,7 +374,7 @@
             const numbers = [...new Set(input.match(/\b\d{6}\b/g))];
             
             if (!numbers || numbers.length === 0) {
-                Swal.fire({ title: 'ข้อมูลไม่ถูกต้อง', text: 'กรุณากรอกเลขสลาก 6 หลัก', icon: 'warning', confirmButtonColor: '#4f46e5' });
+                Swal.fire({ title: 'ข้อมูลไม่ถูกต้อง', text: 'กรุณากรอกเลขสลาก 6 หลักให้ถูกต้อง', icon: 'warning', confirmButtonColor: '#4f46e5' });
                 return;
             }
 
@@ -442,7 +444,7 @@
             el.textContent = res;
         }
 
-        // โหลดข้อมูลล่าสุดตอนเปิดหน้าเว็บ
+        // โหลดข้อมูลล่าสุดทันทีที่หน้าเว็บพร้อม
         window.addEventListener('DOMContentLoaded', () => loadData('latest'));
     </script>
 </body>
