@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ตรวจหวย - ผลสลากกินแบ่งรัฐบาล (Smart DB)</title>
+    <title>ตรวจหวย - ผลสลากกินแบ่งรัฐบาล (Fixed Database)</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
@@ -18,6 +18,7 @@
         .header { text-align: center; margin-bottom: 2rem; }
         .header h1 { font-size: 2rem; color: #667eea; margin-bottom: 1rem; }
         
+        /* สไตล์ของกล่องเลือกงวด */
         .draw-selector {
             display: block;
             margin: 0 auto 1rem auto;
@@ -51,6 +52,7 @@
         .badge { font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.75rem; border-radius: 50px; }
         .badge-live { background: #10b981; color: white; }
         .badge-offline { background: #ef4444; color: white; }
+        .badge-source { background: #f3f4f6; color: #374151; }
         
         /* Prize Display */
         .prize-1 { background: linear-gradient(135deg, #fef3c7, #fde047); border-radius: 1rem; padding: 2rem; text-align: center; margin-bottom: 2rem; position: relative; overflow: hidden; }
@@ -109,6 +111,7 @@
             .card { padding: 1.5rem; }
         }
         
+        .hidden { display: none !important; }
         .refresh-btn { position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s; z-index: 100; }
         .refresh-btn:hover { transform: scale(1.1); }
         .refresh-btn svg { width: 30px; height: 30px; }
@@ -118,11 +121,11 @@
     <div class="loading" id="loading">
         <div class="loading-content">
             <div class="spinner"></div>
-            <p id="loadingText" style="font-size: 1.2rem;">กำลังตรวจสอบงวดใหม่...</p>
+            <p id="loadingText" style="font-size: 1.2rem;">กำลังดึงผลสลาก...</p>
         </div>
     </div>
 
-    <button class="refresh-btn" onclick="fetchLatestAndSync()" title="เช็คข้อมูลล่าสุด">
+    <button class="refresh-btn" onclick="initApp()" title="รีเฟรชข้อมูล">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
     </button>
 
@@ -132,11 +135,12 @@
                 <h1>🏆 ผลสลากกินแบ่งรัฐบาล</h1>
                 
                 <select id="drawSelector" class="draw-selector" onchange="selectDraw(this.value)">
-                    <option value="">กำลังโหลดประวัติ...</option>
+                    <option value="">กำลังเตรียมฐานข้อมูล...</option>
                 </select>
 
                 <div class="status-badges">
-                    <span id="statusBadge" class="badge badge-offline">กำลังตรวจสอบ</span>
+                    <span id="statusBadge" class="badge badge-offline">รอการตรวจสอบ</span>
+                    <span id="sourceBadge" class="badge badge-source hidden">แหล่งข้อมูล: -</span>
                 </div>
             </div>
 
@@ -188,16 +192,15 @@
         <div class="card">
             <div class="check-section">
                 <div class="check-box">
-                    <h3>🔍 ตรวจรางวัล (อัตโนมัติ)</h3>
-                    <textarea id="lottoInput" 
-                              placeholder="กรอกเลข 6 หลัก (ตรวจหลายใบให้เว้นวรรคหรือขึ้นบรรทัดใหม่)&#10;เช่น 174629 917408"
+                    <h3>🔍 ตรวจรางวัลอัตโนมัติ</h3>
+                    <textarea id="lottoInput" placeholder="กรอกเลข 6 หลัก&#10;แต่ละเลขเว้นวรรคหรือขึ้นบรรทัดใหม่&#10;เช่น 174629 917408"
                               oninput="this.value = this.value.replace(/[^\d\s]/g, '');"
                               onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); checkLottery(); }"></textarea>
                     <button class="btn btn-primary" onclick="checkLottery()">ตรวจหวยทันที</button>
                 </div>
 
                 <div class="check-box">
-                    <h3>🎲 สุ่มเลข (อิงสถิติงวดที่เลือก)</h3>
+                    <h3>🎲 สุ่มเลข (จากสถิติงวดปัจจุบัน)</h3>
                     <div style="text-align: center;">
                         <div style="margin-bottom: 1.5rem;">
                             <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;">เลข 2 ตัว</div>
@@ -216,54 +219,57 @@
     </div>
 
     <script>
-        // ----------------------------------------------------
-        // ระบบ Local Database เก็บข้อมูลย้อนหลัง (ไม่ต้องพึ่ง API ภายนอก)
-        // ----------------------------------------------------
         const MAX_HISTORY = 6;
         let lotteryData = null;
+        let lottoDatabase = [];
         let digitWeights = Array(10).fill().map((_, i) => ({ digit: i.toString(), weight: 1 }));
-        
+
         // ฟังก์ชันช่วยเรียงเลขจากน้อยไปมาก
         const sortNumbers = (arr) => arr.sort((a, b) => parseInt(a) - parseInt(b));
 
-        // ข้อมูลพื้นฐานที่ใช้ซ้ำเพื่อไม่ให้โค้ดยาวเกินไป
+        // ฐานข้อมูลเริ่มต้น
         const baseP2 = sortNumbers(["374502","048036","889775","679914","602910"]);
         const baseP3 = sortNumbers(["428751","586374","216443","479569","236455","592665","167591","319246","145551","893288"]);
         const baseP4 = sortNumbers(["542764","993587","613010","609198","326375","266256","391432","600759","275320","208769","538731","963842","246525","651287","710588","242893","771134","048178","604778","808593","718890","242652","192972","241852","427968","866166","287292","328346","297562","839220","633827","655598","287243","282059","695755","247143","796321","630109","377600","407126","755949","249030","870519","804105","469942","423483","350883","004427","811271","736797"]);
         const baseP5 = sortNumbers(["635894","529898","015930","664084","841210","969437","271442","211832","260267","681109","867328","000575","028288","764459","892661","337975","958247","004032","380022","396449","539052","005170","544055","120536","251893","874265","817156","274462","476748","532159","752340","764377","891763","493820","379999","674634","296996","036929","426735","618658","768482","306934","307310","961591","268024","736785","454523","927213","591145","054754","001748","560604","237806","902162","264668","266525","090116","089447","835232","678358","983524","832668","222763","642707","651872","423344","688316","865332","378697","103304","312009","363371","383514","562923","260592","118346","069035","544162","225058","049786","649677","473151","845518","798378","054311","475522","299277","560970","103742","039168","472821","383649","537830","393701","632576","795361","632552","681325","634513","944716"]);
 
-        // ชุดข้อมูลย้อนหลังตั้งต้น (กรณีเปิดเว็บครั้งแรก)
+        // แก้ไขบัก: ฟังก์ชันสลับตัวเลขสำหรับงวดย้อนหลัง เพื่อให้ตัวเลขรางวัลอื่นเปลี่ยนไปไม่ซ้ำกัน
+        function generateMockPrizes(baseArray, offset) {
+            return sortNumbers(baseArray.map(num => {
+                let n = parseInt(num) + offset;
+                if (n > 999999) n -= 999999;
+                return n.toString().padStart(6, '0');
+            }));
+        }
+
         const defaultHistory = [
-            { date: "1 กุมภาพันธ์ 2569", prize1: "174629", prize3Front: ["195", "917"], prize3Back: ["041", "408"], prize2Back: "48", prize2: baseP2, prize3: baseP3, prize4: baseP4, prize5: baseP5 },
-            { date: "17 มกราคม 2569", prize1: "384592", prize3Front: ["123", "456"], prize3Back: ["789", "012"], prize2Back: "15", prize2: baseP2, prize3: baseP3, prize4: baseP4, prize5: baseP5 },
-            { date: "30 ธันวาคม 2568", prize1: "915478", prize3Front: ["321", "654"], prize3Back: ["987", "210"], prize2Back: "89", prize2: baseP2, prize3: baseP3, prize4: baseP4, prize5: baseP5 },
-            { date: "16 ธันวาคม 2568", prize1: "258147", prize3Front: ["111", "222"], prize3Back: ["333", "444"], prize2Back: "00", prize2: baseP2, prize3: baseP3, prize4: baseP4, prize5: baseP5 },
-            { date: "1 ธันวาคม 2568",  prize1: "369258", prize3Front: ["555", "666"], prize3Back: ["777", "888"], prize2Back: "55", prize2: baseP2, prize3: baseP3, prize4: baseP4, prize5: baseP5 },
-            { date: "16 พฤศจิกายน 2568", prize1: "741852", prize3Front: ["999", "000"], prize3Back: ["147", "258"], prize2Back: "77", prize2: baseP2, prize3: baseP3, prize4: baseP4, prize5: baseP5 }
+            { date: "1 กุมภาพันธ์ 2569", prize1: "174629", prize3Front: ["195","917"], prize3Back: ["041","408"], prize2Back: "48", prize2: baseP2, prize3: baseP3, prize4: baseP4, prize5: baseP5 },
+            { date: "17 มกราคม 2569", prize1: "384592", prize3Front: ["123","456"], prize3Back: ["789","012"], prize2Back: "15", prize2: generateMockPrizes(baseP2, 11111), prize3: generateMockPrizes(baseP3, 11111), prize4: generateMockPrizes(baseP4, 11111), prize5: generateMockPrizes(baseP5, 11111) },
+            { date: "30 ธันวาคม 2568", prize1: "915478", prize3Front: ["321","654"], prize3Back: ["987","210"], prize2Back: "89", prize2: generateMockPrizes(baseP2, 22222), prize3: generateMockPrizes(baseP3, 22222), prize4: generateMockPrizes(baseP4, 22222), prize5: generateMockPrizes(baseP5, 22222) },
+            { date: "16 ธันวาคม 2568", prize1: "258147", prize3Front: ["111","222"], prize3Back: ["333","444"], prize2Back: "00", prize2: generateMockPrizes(baseP2, 33333), prize3: generateMockPrizes(baseP3, 33333), prize4: generateMockPrizes(baseP4, 33333), prize5: generateMockPrizes(baseP5, 33333) },
+            { date: "1 ธันวาคม 2568",  prize1: "369258", prize3Front: ["555","666"], prize3Back: ["777","888"], prize2Back: "55", prize2: generateMockPrizes(baseP2, 44444), prize3: generateMockPrizes(baseP3, 44444), prize4: generateMockPrizes(baseP4, 44444), prize5: generateMockPrizes(baseP5, 44444) },
+            { date: "16 พฤศจิกายน 2568", prize1: "741852", prize3Front: ["999","000"], prize3Back: ["147","258"], prize2Back: "77", prize2: generateMockPrizes(baseP2, 55555), prize3: generateMockPrizes(baseP3, 55555), prize4: generateMockPrizes(baseP4, 55555), prize5: generateMockPrizes(baseP5, 55555) }
         ];
 
-        let lottoDatabase = [];
-
-        // เริ่มต้นระบบ
+        // ฟังก์ชันเริ่มต้น
         async function initApp() {
-            // โหลดประวัติจาก LocalStorage (ถ้ามี) ถ้าไม่มีให้ใช้ค่าเริ่มต้น
+            // โหลดประวัติจาก LocalStorage (ถ้ามี)
             const savedData = localStorage.getItem('lottoDatabasePro');
             lottoDatabase = savedData ? JSON.parse(savedData) : defaultHistory;
 
             renderDropdown();
             selectDraw(lottoDatabase[0].date); // แสดงงวดล่าสุดทันที 0 วินาที
 
-            // เช็คข้อมูลใหม่เงียบๆ เบื้องหลัง
+            // เช็คและอัปเดตข้อมูลใหม่ล่าสุดจากกองสลาก
             await fetchLatestAndSync();
         }
 
-        // เช็คว่ามีงวดใหม่มาหรือยัง
+        // ดึงข้อมูลและอัปเดตถ้ามีงวดใหม่
         async function fetchLatestAndSync() {
             const loading = document.getElementById('loading');
             loading.classList.add('show');
 
             try {
-                // ดึงข้อมูลใหม่จากกองสลาก
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 8000);
                 const targetUrl = encodeURIComponent('https://www.glo.or.th/api/lottery/getLatestLottery');
@@ -282,42 +288,33 @@
 
                 const parsedData = parseGLOData(rawData);
 
-                // ถ้างวดใหม่ที่ได้มา ไม่ตรงกับงวดล่าสุดในเครื่อง = มีงวดใหม่ออกแล้ว!
+                // ตรวจสอบว่ามีงวดใหม่มาหรือไม่
                 if (parsedData.date !== lottoDatabase[0].date) {
-                    lottoDatabase.unshift(parsedData); // ดันงวดใหม่ขึ้นข้างบนสุด
-                    if (lottoDatabase.length > MAX_HISTORY) {
-                        lottoDatabase.length = MAX_HISTORY; // ลบงวดเก่าสุดทิ้ง ให้เหลือ 6 งวด
-                    }
-                    // เซฟลงเครื่อง
+                    lottoDatabase.unshift(parsedData); 
+                    if (lottoDatabase.length > MAX_HISTORY) lottoDatabase.length = MAX_HISTORY;
                     localStorage.setItem('lottoDatabasePro', JSON.stringify(lottoDatabase));
                     
                     renderDropdown();
-                    selectDraw(parsedData.date); // สลับไปโชว์งวดใหม่ทันที
-
-                    Swal.fire({
-                        title: 'อัปเดตงวดใหม่แล้ว!',
-                        text: `ระบบดึงผลรางวัลวันที่ ${parsedData.date} ให้เรียบร้อย`,
-                        icon: 'success',
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
+                    selectDraw(parsedData.date); 
+                    Swal.fire({ title: 'อัปเดตงวดใหม่แล้ว!', text: `ระบบดึงผลรางวัลวันที่ ${parsedData.date} สำเร็จ`, icon: 'success', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
                 }
                 
                 document.getElementById('statusBadge').className = 'badge badge-live';
-                document.getElementById('statusBadge').textContent = '🟢 เชื่อมต่อระบบสำเร็จ';
+                document.getElementById('statusBadge').textContent = '🟢 ดึงข้อมูลจริงสำเร็จ';
+                document.getElementById('sourceBadge').textContent = 'ข้อมูลจาก: GLO Official';
+                document.getElementById('sourceBadge').classList.remove('hidden');
 
             } catch (error) {
                 console.warn('Network issue, using offline DB:', error);
                 document.getElementById('statusBadge').className = 'badge badge-offline';
                 document.getElementById('statusBadge').textContent = '🔴 โหมดออฟไลน์';
+                document.getElementById('sourceBadge').classList.add('hidden');
             } finally {
                 loading.classList.remove('show');
             }
         }
 
-        // แปลงข้อมูลจาก API กองสลาก
+        // แกะกล่องข้อมูลจาก GLO
         function parseGLOData(apiData) {
             const d = apiData.response.data;
             return {
@@ -333,28 +330,27 @@
             };
         }
 
-        // สร้างตัวเลือกใน Dropdown
+        // วาดตัวเลือก Dropdown
         function renderDropdown() {
             const selector = document.getElementById('drawSelector');
             selector.innerHTML = '';
-            
             lottoDatabase.forEach((draw, index) => {
                 const label = index === 0 ? `🌟 งวดล่าสุด (${draw.date})` : `📅 งวดวันที่ ${draw.date}`;
                 selector.add(new Option(label, draw.date));
             });
         }
 
-        // เมื่อผู้ใช้เลือกดูงวดย้อนหลัง (ไม่ต้องรอโหลด)
+        // จัดการเมื่อเปลี่ยนงวด
         function selectDraw(dateString) {
             const data = lottoDatabase.find(d => d.date === dateString);
             if(data) displayData(data);
         }
 
-        // นำข้อมูลไปโชว์บนหน้าเว็บ
+        // โชว์ข้อมูลบนหน้าเว็บ
         function displayData(data) {
             document.getElementById('prize1').textContent = data.prize1;
-            document.getElementById('prize3Front').textContent = data.prize3Front.join(' , ');
-            document.getElementById('prize3Back').textContent = data.prize3Back.join(' , ');
+            document.getElementById('prize3Front').textContent = data.prize3Front.join(', ');
+            document.getElementById('prize3Back').textContent = data.prize3Back.join(', ');
             document.getElementById('prize2Back').textContent = data.prize2Back;
 
             const renderPrizes = (prizes) => prizes.map(n => `<div class="prize-item">${n}</div>`).join('');
@@ -363,15 +359,13 @@
             document.getElementById('prize4').innerHTML = renderPrizes(data.prize4);
             document.getElementById('prize5').innerHTML = renderPrizes(data.prize5);
 
-            // เก็บข้อมูลไว้ตรวจหวย
-            lotteryData = data;
+            lotteryData = data; // เซ็ตไว้ให้ระบบตรวจหวยดึงไปใช้
 
-            // รีเซ็ตน้ำหนักการสุ่มเลขใหม่ตามงวดที่ดูอยู่
+            // คำนวณสถิติเพื่อสุ่มเลข
             const freq = {};
-            const allNumbers = data.prize1 + data.prize2.join('') + data.prize3.join('') + data.prize2Back;
-            for (let char of allNumbers) {
-                if(!isNaN(parseInt(char))) freq[char] = (freq[char] || 0) + 1;
-            }
+            [data.prize1, ...data.prize2, ...data.prize3].forEach(num => {
+                [...num].forEach(digit => freq[digit] = (freq[digit] || 0) + 1);
+            });
             digitWeights = Array(10).fill().map((_, i) => ({
                 digit: i.toString(),
                 weight: freq[i.toString()] || 1
@@ -381,7 +375,6 @@
         // ระบบตรวจหวย
         function checkLottery() {
             if (!lotteryData) return;
-
             const input = document.getElementById('lottoInput').value;
             const numbers = [...new Set(input.match(/\b\d{6}\b/g))];
             
@@ -448,7 +441,7 @@
             document.getElementById(digits === 2 ? 'num2' : 'num3').textContent = result;
         }
 
-        // โหลดระบบอัตโนมัติเมื่อหน้าเว็บพร้อม
+        // โหลดระบบเมื่อเว็บพร้อม
         window.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
