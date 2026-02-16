@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ตรวจหวย - ผลสลากกินแบ่งรัฐบาล (Ultimate Version)</title>
+    <title>ตรวจหวย - ผลสลากกินแบ่งรัฐบาล (Smart Cache)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@
             border-color: #6366f1;
         }
         
-        .fade-in { animation: fadeIn 0.5s ease-in-out forwards; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
@@ -63,8 +63,8 @@
         
         <header class="text-center space-y-4 pt-4">
             <div class="inline-flex items-center justify-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-100 transition-all" id="statusContainer">
-                <span id="statusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
-                <span id="statusText" class="text-xs font-bold tracking-wider text-amber-600 uppercase">กำลังซิงค์ข้อมูล...</span>
+                <span id="statusDot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+                <span id="statusText" class="text-xs font-bold tracking-wider text-slate-500 uppercase">กำลังเตรียมระบบ...</span>
             </div>
             <h1 class="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
                 ผลสลากกินแบ่งรัฐบาล
@@ -72,13 +72,8 @@
             
             <div class="flex justify-center mt-4 mb-2">
                 <div class="relative w-full max-w-xs">
-                    <select id="drawSelector" onchange="loadData(this.value)" class="block w-full bg-white border-2 border-indigo-100 text-indigo-700 py-3 px-5 rounded-2xl shadow-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 font-kanit font-medium text-center text-lg cursor-pointer transition-all hover:bg-indigo-50">
-                        <option value="latest">🌟 งวดล่าสุด</option>
-                        <option value="01022026">📅 1 กุมภาพันธ์ 2569</option>
-                        <option value="17012026">📅 17 มกราคม 2569</option>
-                        <option value="30122025">📅 30 ธันวาคม 2568</option>
-                        <option value="16122025">📅 16 ธันวาคม 2568</option>
-                        <option value="01122025">📅 1 ธันวาคม 2568</option>
+                    <select id="drawSelector" onchange="selectDraw(this.value)" class="block w-full bg-white border-2 border-indigo-100 text-indigo-700 py-3 px-5 rounded-2xl shadow-sm focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 font-kanit font-medium text-center text-lg cursor-pointer transition-all hover:bg-indigo-50">
+                        <option value="">กำลังโหลดประวัติ...</option>
                     </select>
                 </div>
             </div>
@@ -124,28 +119,28 @@
                             <h4 class="font-semibold text-slate-700">รางวัลที่ 2</h4>
                             <span class="text-xs font-medium bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md">200,000 ฿</span>
                         </div>
-                        <div id="prize2" class="grid grid-cols-3 sm:grid-cols-5 gap-2 custom-scrollbar text-slate-400 text-sm text-center">กำลังดึงข้อมูล...</div>
+                        <div id="prize2" class="grid grid-cols-3 sm:grid-cols-5 gap-2 custom-scrollbar text-slate-400 text-sm text-center">...</div>
                     </div>
                     <div class="border border-slate-100 rounded-2xl p-5 bg-white/50">
                         <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-2">
                             <h4 class="font-semibold text-slate-700">รางวัลที่ 3</h4>
                             <span class="text-xs font-medium bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md">80,000 ฿</span>
                         </div>
-                        <div id="prize3" class="grid grid-cols-3 sm:grid-cols-5 gap-2 max-h-[140px] overflow-y-auto custom-scrollbar pr-2 text-slate-400 text-sm text-center">กำลังดึงข้อมูล...</div>
+                        <div id="prize3" class="grid grid-cols-3 sm:grid-cols-5 gap-2 max-h-[140px] overflow-y-auto custom-scrollbar pr-2 text-slate-400 text-sm text-center">...</div>
                     </div>
                     <div class="border border-slate-100 rounded-2xl p-5 bg-white/50">
                         <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-2">
                             <h4 class="font-semibold text-slate-700">รางวัลที่ 4</h4>
                             <span class="text-xs font-medium bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md">40,000 ฿</span>
                         </div>
-                        <div id="prize4" class="grid grid-cols-3 sm:grid-cols-5 gap-2 max-h-[180px] overflow-y-auto custom-scrollbar pr-2 text-slate-400 text-sm text-center">กำลังดึงข้อมูล...</div>
+                        <div id="prize4" class="grid grid-cols-3 sm:grid-cols-5 gap-2 max-h-[180px] overflow-y-auto custom-scrollbar pr-2 text-slate-400 text-sm text-center">...</div>
                     </div>
                     <div class="border border-slate-100 rounded-2xl p-5 bg-white/50">
                         <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-2">
                             <h4 class="font-semibold text-slate-700">รางวัลที่ 5</h4>
                             <span class="text-xs font-medium bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md">20,000 ฿</span>
                         </div>
-                        <div id="prize5" class="grid grid-cols-3 sm:grid-cols-5 gap-2 max-h-[180px] overflow-y-auto custom-scrollbar pr-2 text-slate-400 text-sm text-center">กำลังดึงข้อมูล...</div>
+                        <div id="prize5" class="grid grid-cols-3 sm:grid-cols-5 gap-2 max-h-[180px] overflow-y-auto custom-scrollbar pr-2 text-slate-400 text-sm text-center">...</div>
                     </div>
                 </div>
             </section>
@@ -194,171 +189,201 @@
     </div>
 
     <script>
-        let lottoData = null;
+        // --------------------------------------------------------
+        // ระบบ Local Database & Smart Cache (เก็บได้สูงสุด 6 งวด)
+        // --------------------------------------------------------
+        const MAX_HISTORY = 6;
+        const PAST_DATES = ['17012026', '30122025', '16122025', '01122025', '16112025']; // ใช้ดึงตอนฐานข้อมูลว่างเปล่าครั้งแรก
+        
+        let lottoDatabase = JSON.parse(localStorage.getItem('lottoDatabase')) || [];
+        let currentDrawData = null;
         let digitWeights = [];
 
-        // ฟังก์ชันช่วยเรียงลำดับตัวเลขจากน้อยไปมาก
-        const sortNumbers = (arr) => {
-            return arr.sort((a, b) => parseInt(a) - parseInt(b));
-        };
+        // เรียงตัวเลข
+        const sortNumbers = (arr) => arr.sort((a, b) => parseInt(a) - parseInt(b));
 
-        function setStatus(state, source = '') {
+        function setStatus(state) {
             const dot = document.getElementById('statusDot');
             const text = document.getElementById('statusText');
             const container = document.getElementById('statusContainer');
             
             if (state === 'syncing') {
                 dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping';
-                text.textContent = 'กำลังดึงข้อมูล...';
+                text.textContent = 'กำลังอัปเดตข้อมูล...';
                 text.className = 'text-xs font-bold tracking-wider text-amber-600 uppercase';
                 container.className = 'inline-flex items-center justify-center gap-2 bg-amber-50 px-4 py-2 rounded-full shadow-sm border border-amber-100 transition-all';
-            } else if (state === 'online') {
+            } else if (state === 'ready') {
                 dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500';
-                text.textContent = source === 'rayriffy' ? 'Rayriffy API (History)' : 'Online / GLO API';
+                text.textContent = 'ฐานข้อมูลพร้อมใช้งาน';
                 text.className = 'text-xs font-bold tracking-wider text-emerald-600 uppercase';
                 container.className = 'inline-flex items-center justify-center gap-2 bg-emerald-50 px-4 py-2 rounded-full shadow-sm border border-emerald-100 transition-all';
-            } else {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500';
-                text.textContent = 'Offline Mode';
-                text.className = 'text-xs font-bold tracking-wider text-rose-600 uppercase';
-                container.className = 'inline-flex items-center justify-center gap-2 bg-rose-50 px-4 py-2 rounded-full shadow-sm border border-rose-100 transition-all';
             }
         }
 
-        function preLoadUI() {
-            const ids = ['prize1', 'last3f', 'last3b', 'last2', 'prize2', 'prize3', 'prize4', 'prize5'];
-            ids.forEach(id => {
-                const el = document.getElementById(id);
-                el.classList.remove('fade-in');
-                el.classList.add('opacity-50');
+        // 1. ฟังก์ชันเริ่มต้นระบบ (Init)
+        async function initializeApp() {
+            // ถ้ามีข้อมูลเก่าในเครื่อง โชว์ให้ผู้ใช้เห็นทันที (0 วินาที)
+            if (lottoDatabase.length > 0) {
+                renderDropdown();
+                selectDraw(lottoDatabase[0].date); 
+            }
+
+            setStatus('syncing');
+
+            try {
+                // เช็คว่ามีงวดใหม่จากกองสลากหรือไม่
+                const latestData = await fetchGLO_Latest();
+                
+                // ถ้างวดที่ดึงมาใหม่ "ไม่ตรง" กับงวดล่าสุดที่บันทึกไว้ในเครื่อง แสดงว่างวดใหม่ออกแล้ว!
+                const isNewDraw = lottoDatabase.length === 0 || lottoDatabase[0].date !== latestData.date;
+
+                if (isNewDraw) {
+                    lottoDatabase.unshift(latestData); // ดันขึ้นไปบนสุด
+
+                    // ถ้าฐานข้อมูลเพิ่งสร้างครั้งแรก ให้ไปดึงข้อมูลย้อนหลังมาเติมให้เต็ม 6 งวดด้วย
+                    if (lottoDatabase.length === 1) {
+                        for (let dateId of PAST_DATES) {
+                            try {
+                                const pastData = await fetchRayriffy(dateId);
+                                if(pastData) lottoDatabase.push(pastData);
+                            } catch(e) { console.warn("Skip history load:", dateId); }
+                        }
+                    }
+
+                    // ลบงวดที่เก่าเกินไปออก (เก็บไว้ 6 งวด)
+                    if (lottoDatabase.length > MAX_HISTORY) {
+                        lottoDatabase.length = MAX_HISTORY; // ตัดหางทิ้ง
+                    }
+                    
+                    // บันทึกลง Local Storage
+                    localStorage.setItem('lottoDatabase', JSON.stringify(lottoDatabase));
+                    
+                    // อัปเดต UI ใหม่อีกครั้ง
+                    renderDropdown();
+                    selectDraw(lottoDatabase[0].date);
+                    
+                    Swal.fire({
+                        title: 'อัปเดตงวดใหม่แล้ว!',
+                        text: `พบผลรางวัลประจำวันที่ ${latestData.date}`,
+                        icon: 'success',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+                
+                setStatus('ready');
+            } catch (error) {
+                console.warn("ไม่สามารถเช็ค API ล่าสุดได้ ใช้งานโหมดออฟไลน์", error);
+                if (lottoDatabase.length === 0) {
+                    loadHardcodedFallback(); // ถ้าเครื่องว่างเปล่าและเน็ตหลุด ให้ใช้ข้อมูลในโค้ด
+                }
+                setStatus('ready');
+            }
+        }
+
+        // 2. ดึงข้อมูล GLO (Proxy 2 ชั้นป้องกันล่ม)
+        async function fetchGLO_Latest() {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            const targetUrl = encodeURIComponent('https://www.glo.or.th/api/lottery/getLatestLottery');
+            let data = null;
+
+            try {
+                const res1 = await fetch(`https://api.allorigins.win/get?url=${targetUrl}&t=${Date.now()}`, { signal: controller.signal });
+                if (!res1.ok) throw new Error();
+                const json1 = await res1.json();
+                data = JSON.parse(json1.contents);
+            } catch (e) {
+                const res2 = await fetch(`https://api.codetabs.com/v1/proxy?quest=${targetUrl}`, { signal: controller.signal });
+                data = await res2.json();
+            }
+            clearTimeout(timeoutId);
+
+            const gloData = data.response ? data.response.data : data;
+            return {
+                date: data.response ? data.response.date : "ล่าสุด",
+                p1: gloData.first[0].number,
+                p2: sortNumbers(gloData.second.map(i => i.number)),
+                p3: sortNumbers(gloData.third.map(i => i.number)),
+                p4: sortNumbers(gloData.fourth.map(i => i.number)),
+                p5: sortNumbers(gloData.fifth.map(i => i.number)),
+                last3f: sortNumbers(gloData.last3f.map(i => i.number)),
+                last3b: sortNumbers(gloData.last3b.map(i => i.number)),
+                last2: gloData.last2[0].number
+            };
+        }
+
+        // 3. ดึงข้อมูล Rayriffy (ใช้เติมประวัติครั้งแรกเท่านั้น)
+        async function fetchRayriffy(dateId) {
+            const res = await fetch(`https://lotto.api.rayriffy.com/${dateId}`);
+            if(!res.ok) return null;
+            const raw = await res.json();
+            const d = raw.response;
+            return {
+                date: d.date,
+                p1: d.prizes.find(p => p.id === 'prizeFirst').number[0],
+                p2: sortNumbers(d.prizes.find(p => p.id === 'prizeSecond').number),
+                p3: sortNumbers(d.prizes.find(p => p.id === 'prizeThird').number),
+                p4: sortNumbers(d.prizes.find(p => p.id === 'prizeFourth').number),
+                p5: sortNumbers(d.prizes.find(p => p.id === 'prizeFifth').number),
+                last3f: sortNumbers(d.runningNumbers.find(p => p.id === 'runningNumberFrontThree').number),
+                last3b: sortNumbers(d.runningNumbers.find(p => p.id === 'runningNumberBackThree').number),
+                last2: d.runningNumbers.find(p => p.id === 'runningNumberBackTwo').number[0]
+            };
+        }
+
+        // 4. วาด Dropdown ตามที่มีใน Local Storage
+        function renderDropdown() {
+            const selector = document.getElementById('drawSelector');
+            selector.innerHTML = ''; // ล้างของเก่า
+            
+            lottoDatabase.forEach((draw, index) => {
+                const isLatest = index === 0;
+                const label = isLatest ? `🌟 งวดล่าสุด (${draw.date})` : `📅 ${draw.date}`;
+                const option = new Option(label, draw.date);
+                selector.add(option);
             });
         }
 
-        // ฟังก์ชันดึงข้อมูลแบบอึด ทนทานต่อเซิร์ฟเวอร์ล่ม (10 วินาที Timeout + 2 Proxies)
-        async function loadData(dateId = 'latest') {
-            setStatus('syncing');
-            preLoadUI();
-            
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); 
-
-            try {
-                if (dateId === 'latest') {
-                    let data = null;
-                    const targetUrl = encodeURIComponent('https://www.glo.or.th/api/lottery/getLatestLottery');
-                    
-                    try {
-                        const res1 = await fetch(`https://api.allorigins.win/get?url=${targetUrl}&t=${Date.now()}`, { signal: controller.signal });
-                        if (!res1.ok) throw new Error('Proxy 1 failed');
-                        const json1 = await res1.json();
-                        data = JSON.parse(json1.contents);
-                    } catch (e1) {
-                        console.warn('Proxy 1 ล้มเหลว ลองใช้ Proxy 2...');
-                        const res2 = await fetch(`https://api.codetabs.com/v1/proxy?quest=${targetUrl}`, { signal: controller.signal });
-                        if (!res2.ok) throw new Error('Proxy 2 failed');
-                        data = await res2.json();
-                    }
-
-                    clearTimeout(timeoutId);
-                    const gloData = data.response ? data.response.data : data;
-
-                    lottoData = {
-                        date: data.response ? data.response.date : "งวดล่าสุด",
-                        p1: gloData.first[0].number,
-                        p2: sortNumbers(gloData.second.map(i => i.number)),
-                        p3: sortNumbers(gloData.third.map(i => i.number)),
-                        p4: sortNumbers(gloData.fourth.map(i => i.number)),
-                        p5: sortNumbers(gloData.fifth.map(i => i.number)),
-                        last3f: sortNumbers(gloData.last3f.map(i => i.number)),
-                        last3b: sortNumbers(gloData.last3b.map(i => i.number)),
-                        last2: gloData.last2[0].number
-                    };
-                    updateUI();
-                    setStatus('online', 'glo');
-
-                } else {
-                    const response = await fetch(`https://lotto.api.rayriffy.com/${dateId}`, { signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    
-                    if (!response.ok) throw new Error('Rayriffy API Error');
-                    const raw = await response.json();
-                    const res = raw.response;
-
-                    lottoData = {
-                        date: res.date,
-                        p1: res.prizes.find(p => p.id === 'prizeFirst').number[0],
-                        p2: sortNumbers(res.prizes.find(p => p.id === 'prizeSecond').number),
-                        p3: sortNumbers(res.prizes.find(p => p.id === 'prizeThird').number),
-                        p4: sortNumbers(res.prizes.find(p => p.id === 'prizeFourth').number),
-                        p5: sortNumbers(res.prizes.find(p => p.id === 'prizeFifth').number),
-                        last3f: sortNumbers(res.runningNumbers.find(p => p.id === 'runningNumberFrontThree').number),
-                        last3b: sortNumbers(res.runningNumbers.find(p => p.id === 'runningNumberBackThree').number),
-                        last2: res.runningNumbers.find(p => p.id === 'runningNumberBackTwo').number[0]
-                    };
-                    updateUI();
-                    setStatus('online', 'rayriffy');
-                }
-            } catch (error) {
-                console.warn('API Failed:', error);
-                
-                if(dateId === 'latest' || dateId === '01022026') {
-                    useFallback();
-                    Swal.fire({ title: 'โหมดออฟไลน์', text: 'ไม่สามารถดึงข้อมูลสดได้ชั่วคราว ระบบกำลังแสดงผลข้อมูลล่าสุดแทนครับ', icon: 'info', confirmButtonColor: '#94a3b8' });
-                } else {
-                    Swal.fire({ title: 'เซิร์ฟเวอร์ขัดข้อง', text: 'ไม่สามารถดึงข้อมูลย้อนหลังงวดที่เลือกได้ในขณะนี้ กรุณาลองใหม่ภายหลัง', icon: 'error', confirmButtonColor: '#4f46e5' });
-                    document.getElementById('drawSelector').value = 'latest';
-                    loadData('latest');
-                }
-            }
-        }
-
-        // ข้อมูลสำรอง (Fallback) งวด 1 ก.พ. 2569
-        function useFallback() {
-            const rawP2 = ["374502","048036","889775","679914","602910"];
-            const rawP3 = ["428751","586374","216443","479569","236455","592665","167591","319246","145551","893288"];
-            const rawP4 = ["542764","993587","613010","609198","326375","266256","391432","600759","275320","208769","538731","963842","246525","651287","710588","242893","771134","048178","604778","808593","718890","242652","192972","241852","427968","866166","287292","328346","297562","839220","633827","655598","287243","282059","695755","247143","796321","630109","377600","407126","755949","249030","870519","804105","469942","423483","350883","004427","811271","736797"];
-            const rawP5 = ["635894","529898","015930","664084","841210","969437","271442","211832","260267","681109","867328","000575","028288","764459","892661","337975","958247","004032","380022","396449","539052","005170","544055","120536","251893","874265","817156","274462","476748","532159","752340","764377","891763","493820","379999","674634","296996","036929","426735","618658","768482","306934","307310","961591","268024","736785","454523","927213","591145","054754","001748","560604","237806","902162","264668","266525","090116","089447","835232","678358","983524","832668","222763","642707","651872","423344","688316","865332","378697","103304","312009","363371","383514","562923","260592","118346","069035","544162","225058","049786","649677","473151","845518","798378","054311","475522","299277","560970","103742","039168","472821","383649","537830","393701","632576","795361","632552","681325","634513","944716"];
-
-            lottoData = {
-                date: "1 กุมภาพันธ์ 2569", p1: "174629",
-                p2: sortNumbers(rawP2), p3: sortNumbers(rawP3), p4: sortNumbers(rawP4), p5: sortNumbers(rawP5),
-                last3f: sortNumbers(["917", "195"]), last3b: sortNumbers(["408", "041"]), last2: "48"
-            };
-            
-            updateUI();
-            setStatus('offline');
+        // 5. เมื่อผู้ใช้เลือกงวดจาก Dropdown (โหลดเร็วปานสายฟ้าเพราะดึงจากตัวแปร)
+        function selectDraw(dateString) {
+            // ค้นหาข้อมูลใน Database
+            currentDrawData = lottoDatabase.find(d => d.date === dateString);
+            if(currentDrawData) updateUI();
         }
 
         function updateUI() {
             const ids = ['prize1', 'last3f', 'last3b', 'last2'];
             ids.forEach(id => {
                 const el = document.getElementById(id);
-                el.classList.remove('opacity-50');
+                el.classList.remove('opacity-50', 'fade-in');
                 void el.offsetWidth;
                 el.classList.add('fade-in');
             });
             
-            document.getElementById('drawDate').textContent = `ข้อมูลของงวดประจำวันที่ ${lottoData.date}`;
-            document.getElementById('prize1').textContent = lottoData.p1;
-            document.getElementById('last3f').textContent = lottoData.last3f.join(' , ');
-            document.getElementById('last3b').textContent = lottoData.last3b.join(' , ');
-            document.getElementById('last2').textContent = lottoData.last2;
+            document.getElementById('drawDate').textContent = `ข้อมูลของงวดประจำวันที่ ${currentDrawData.date}`;
+            document.getElementById('prize1').textContent = currentDrawData.p1;
+            document.getElementById('last3f').textContent = currentDrawData.last3f.join(' , ');
+            document.getElementById('last3b').textContent = currentDrawData.last3b.join(' , ');
+            document.getElementById('last2').textContent = currentDrawData.last2;
 
             const renderGrid = (id, list) => {
-                const container = document.getElementById(id);
-                container.innerHTML = list.map(num => `
+                document.getElementById(id).innerHTML = list.map(num => `
                     <div class="bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 transition duration-200 py-1.5 px-2 rounded-lg text-center text-sm font-semibold text-slate-600 border border-slate-200 fade-in">
                         ${num}
                     </div>`).join('');
             };
             
-            renderGrid('prize2', lottoData.p2);
-            renderGrid('prize3', lottoData.p3);
-            renderGrid('prize4', lottoData.p4);
-            renderGrid('prize5', lottoData.p5);
+            renderGrid('prize2', currentDrawData.p2);
+            renderGrid('prize3', currentDrawData.p3);
+            renderGrid('prize4', currentDrawData.p4);
+            renderGrid('prize5', currentDrawData.p5);
 
+            // คำนวณความน่าจะเป็นของงวดนั้นๆ
             digitWeights = Array.from({length: 10}, (_, i) => ({ digit: i.toString(), weight: 1 }));
-            const all = lottoData.p1 + lottoData.p2.join('') + lottoData.p3.join('') + lottoData.last2;
+            const all = currentDrawData.p1 + currentDrawData.p2.join('') + currentDrawData.p3.join('') + currentDrawData.last2;
             for (let char of all) {
                 const idx = parseInt(char);
                 if(!isNaN(idx)) digitWeights[idx].weight += 1;
@@ -366,44 +391,41 @@
         }
 
         function checkLottery() {
-            if (!lottoData) {
-                Swal.fire({ title: 'โปรดรอสักครู่', text: 'ระบบกำลังดึงข้อมูลรางวัล', icon: 'info' });
-                return;
-            }
+            if (!currentDrawData) return;
             const input = document.getElementById('lottoInput').value;
             const numbers = [...new Set(input.match(/\b\d{6}\b/g))];
             
             if (!numbers || numbers.length === 0) {
-                Swal.fire({ title: 'ข้อมูลไม่ถูกต้อง', text: 'กรุณากรอกเลขสลาก 6 หลักให้ถูกต้อง', icon: 'warning', confirmButtonColor: '#4f46e5' });
+                Swal.fire({ title: 'ข้อมูลไม่ถูกต้อง', text: 'กรุณากรอกเลขสลาก 6 หลักให้ครบถ้วน', icon: 'warning', confirmButtonColor: '#4f46e5' });
                 return;
             }
 
             let results = [], total = 0;
             numbers.forEach(num => {
                 let prizes = [], amount = 0;
-                if (num === lottoData.p1) { prizes.push('รางวัลที่ 1'); amount += 6000000; }
-                if (lottoData.p2.includes(num)) { prizes.push('รางวัลที่ 2'); amount += 200000; }
-                if (lottoData.p3.includes(num)) { prizes.push('รางวัลที่ 3'); amount += 80000; }
-                if (lottoData.p4.includes(num)) { prizes.push('รางวัลที่ 4'); amount += 40000; }
-                if (lottoData.p5.includes(num)) { prizes.push('รางวัลที่ 5'); amount += 20000; }
+                if (num === currentDrawData.p1) { prizes.push('รางวัลที่ 1'); amount += 6000000; }
+                if (currentDrawData.p2.includes(num)) { prizes.push('รางวัลที่ 2'); amount += 200000; }
+                if (currentDrawData.p3.includes(num)) { prizes.push('รางวัลที่ 3'); amount += 80000; }
+                if (currentDrawData.p4.includes(num)) { prizes.push('รางวัลที่ 4'); amount += 40000; }
+                if (currentDrawData.p5.includes(num)) { prizes.push('รางวัลที่ 5'); amount += 20000; }
                 
                 const f3 = num.substring(0, 3), b3 = num.substring(3, 6), b2 = num.substring(4, 6);
-                lottoData.last3f.forEach(p => { if (f3 === p) { prizes.push('เลขหน้า 3 ตัว'); amount += 4000; }});
-                lottoData.last3b.forEach(p => { if (b3 === p) { prizes.push('เลขท้าย 3 ตัว'); amount += 4000; }});
-                if (b2 === lottoData.last2) { prizes.push('เลขท้าย 2 ตัว'); amount += 2000; }
+                currentDrawData.last3f.forEach(p => { if (f3 === p) { prizes.push('เลขหน้า 3 ตัว'); amount += 4000; }});
+                currentDrawData.last3b.forEach(p => { if (b3 === p) { prizes.push('เลขท้าย 3 ตัว'); amount += 4000; }});
+                if (b2 === currentDrawData.last2) { prizes.push('เลขท้าย 2 ตัว'); amount += 2000; }
                 
                 if (amount > 0) { results.push({ number: num, prizes: prizes.join(', '), amount: amount }); total += amount; }
             });
 
-            let html = `<div class="text-left font-kanit">`;
-            html += `<p class="text-slate-500 text-sm mb-4 border-b pb-2">ตรวจของงวดประจำวันที่ ${lottoData.date}</p>`;
+            let html = `<div class="text-left font-kanit">
+                        <p class="text-slate-500 text-sm mb-4 border-b pb-2">ตรวจงวดประจำวันที่ ${currentDrawData.date}</p>`;
             
             if (results.length > 0) {
                 html += `<div class="bg-emerald-50 text-emerald-700 p-4 rounded-xl mb-4 border border-emerald-100 text-center">
                             <p class="text-sm font-medium">รวมเงินรางวัลทั้งหมด</p>
                             <p class="text-3xl font-bold tracking-wider">${total.toLocaleString()} ฿</p>
-                         </div>`;
-                html += `<div class="space-y-3 max-h-64 overflow-y-auto custom-scrollbar pr-2">`;
+                         </div>
+                         <div class="space-y-3 max-h-64 overflow-y-auto custom-scrollbar pr-2">`;
                 results.forEach(r => {
                     html += `
                     <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex justify-between items-center">
@@ -417,7 +439,7 @@
                     </div>`;
                 });
                 html += `</div>`;
-                Swal.fire({ html, showConfirmButton: true, confirmButtonText: 'ปิด', confirmButtonColor: '#4f46e5', width: '450px' });
+                Swal.fire({ html, showConfirmButton: true, confirmButtonText: 'ปิดหน้าต่าง', confirmButtonColor: '#4f46e5', width: '450px' });
             } else { 
                 html += `
                 <div class="text-center py-6">
@@ -444,8 +466,23 @@
             el.textContent = res;
         }
 
-        // โหลดข้อมูลล่าสุดทันทีที่หน้าเว็บพร้อม
-        window.addEventListener('DOMContentLoaded', () => loadData('latest'));
+        function loadHardcodedFallback() {
+            // เผื่อคนกดเข้ามาครั้งแรกแล้วเน็ตหลุดพอดี
+            const fallbackData = {
+                date: "1 กุมภาพันธ์ 2569", p1: "174629",
+                p2: sortNumbers(["374502","048036","889775","679914","602910"]),
+                p3: sortNumbers(["428751","586374","216443","479569","236455","592665","167591","319246","145551","893288"]),
+                p4: sortNumbers(["542764","993587","613010","609198","326375","266256","391432","600759","275320","208769","538731","963842","246525","651287","710588","242893","771134","048178","604778","808593","718890","242652","192972","241852","427968","866166","287292","328346","297562","839220","633827","655598","287243","282059","695755","247143","796321","630109","377600","407126","755949","249030","870519","804105","469942","423483","350883","004427","811271","736797"]),
+                p5: sortNumbers(["635894","529898","015930","664084","841210","969437","271442","211832","260267","681109","867328","000575","028288","764459","892661","337975","958247","004032","380022","396449","539052","005170","544055","120536","251893","874265","817156","274462","476748","532159","752340","764377","891763","493820","379999","674634","296996","036929","426735","618658","768482","306934","307310","961591","268024","736785","454523","927213","591145","054754","001748","560604","237806","902162","264668","266525","090116","089447","835232","678358","983524","832668","222763","642707","651872","423344","688316","865332","378697","103304","312009","363371","383514","562923","260592","118346","069035","544162","225058","049786","649677","473151","845518","798378","054311","475522","299277","560970","103742","039168","472821","383649","537830","393701","632576","795361","632552","681325","634513","944716"]),
+                last3f: ["195", "917"], last3b: ["041", "408"], last2: "48"
+            };
+            lottoDatabase = [fallbackData];
+            renderDropdown();
+            selectDraw(fallbackData.date);
+        }
+
+        // เริ่มการทำงานทั้งหมดเมื่อหน้าเว็บโหลดเสร็จ
+        window.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
 </html>
