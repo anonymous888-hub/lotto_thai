@@ -144,7 +144,7 @@
         <div class="card">
             <div class="header" style="margin-bottom: 1.5rem;">
                 <h2 style="font-size: 1.8rem; color: #667eea; margin-bottom: 0.5rem; font-weight: 700;">🔮 คาดการณ์งวดหน้า</h2>
-                <p style="font-size: 1rem; color: #6b7280;">วิเคราะห์จากสถิติ 5 ปี (หลีกเลี่ยงเลขซ้ำงวดปัจจุบัน)</p>
+                <p style="font-size: 1rem; color: #6b7280;">วิเคราะห์จากสถิติ 5 ปี</p>
             </div>
             
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 1rem;">
@@ -154,16 +154,40 @@
                         <div style="font-size: 0.85rem; color: #78350f; margin-top: 0.25rem;">คะแนนสูงสุด</div>
                     </div>
                     <div style="background: white; border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.5rem;">
-                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem;">ท้าย 2 ตัว</div>
-                        <div style="font-size: 1.8rem; font-weight: 700; color: #db2777; letter-spacing: 0.1em;" id="predict1_2">--</div>
+                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;">ท้าย 2 ตัว (3 ชุด)</div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+                            <div style="background: #fce7f3; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.4rem; font-weight: 700; color: #db2777; letter-spacing: 0.08em;" id="predict1_2_1">--</div>
+                            </div>
+                            <div style="background: #fce7f3; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.4rem; font-weight: 700; color: #db2777; letter-spacing: 0.08em;" id="predict1_2_2">--</div>
+                            </div>
+                            <div style="background: #fce7f3; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.4rem; font-weight: 700; color: #db2777; letter-spacing: 0.08em;" id="predict1_2_3">--</div>
+                            </div>
+                        </div>
                     </div>
                     <div style="background: white; border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.5rem;">
-                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem;">หน้า 3 ตัว</div>
-                        <div style="font-size: 1.8rem; font-weight: 700; color: #667eea; letter-spacing: 0.1em;" id="predict1_3f">---</div>
+                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;">หน้า 3 ตัว (2 ชุด)</div>
+                        <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                            <div style="flex: 1; background: #f3f4f6; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #667eea; letter-spacing: 0.08em;" id="predict1_3f_1">---</div>
+                            </div>
+                            <div style="flex: 1; background: #f3f4f6; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #667eea; letter-spacing: 0.08em;" id="predict1_3f_2">---</div>
+                            </div>
+                        </div>
                     </div>
                     <div style="background: white; border-radius: 0.75rem; padding: 1rem;">
-                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem;">ท้าย 3 ตัว</div>
-                        <div style="font-size: 1.8rem; font-weight: 700; color: #667eea; letter-spacing: 0.1em;" id="predict1_3b">---</div>
+                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;">ท้าย 3 ตัว (2 ชุด)</div>
+                        <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                            <div style="flex: 1; background: #f3f4f6; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #667eea; letter-spacing: 0.08em;" id="predict1_3b_1">---</div>
+                            </div>
+                            <div style="flex: 1; background: #f3f4f6; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #667eea; letter-spacing: 0.08em;" id="predict1_3b_2">---</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -173,23 +197,47 @@
                         <div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">คะแนนสูงรอง</div>
                     </div>
                     <div style="background: white; border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.5rem;">
-                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem;">ท้าย 2 ตัว</div>
-                        <div style="font-size: 1.8rem; font-weight: 700; color: #db2777; letter-spacing: 0.1em;" id="predict2_2">--</div>
+                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;">ท้าย 2 ตัว (3 ชุด)</div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+                            <div style="background: #fce7f3; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.4rem; font-weight: 700; color: #db2777; letter-spacing: 0.08em;" id="predict2_2_1">--</div>
+                            </div>
+                            <div style="background: #fce7f3; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.4rem; font-weight: 700; color: #db2777; letter-spacing: 0.08em;" id="predict2_2_2">--</div>
+                            </div>
+                            <div style="background: #fce7f3; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.4rem; font-weight: 700; color: #db2777; letter-spacing: 0.08em;" id="predict2_2_3">--</div>
+                            </div>
+                        </div>
                     </div>
                     <div style="background: white; border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.5rem;">
-                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem;">หน้า 3 ตัว</div>
-                        <div style="font-size: 1.8rem; font-weight: 700; color: #667eea; letter-spacing: 0.1em;" id="predict2_3f">---</div>
+                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;">หน้า 3 ตัว (2 ชุด)</div>
+                        <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                            <div style="flex: 1; background: #f3f4f6; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #667eea; letter-spacing: 0.08em;" id="predict2_3f_1">---</div>
+                            </div>
+                            <div style="flex: 1; background: #f3f4f6; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #667eea; letter-spacing: 0.08em;" id="predict2_3f_2">---</div>
+                            </div>
+                        </div>
                     </div>
                     <div style="background: white; border-radius: 0.75rem; padding: 1rem;">
-                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem;">ท้าย 3 ตัว</div>
-                        <div style="font-size: 1.8rem; font-weight: 700; color: #667eea; letter-spacing: 0.1em;" id="predict2_3b">---</div>
+                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem;">ท้าย 3 ตัว (2 ชุด)</div>
+                        <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                            <div style="flex: 1; background: #f3f4f6; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #667eea; letter-spacing: 0.08em;" id="predict2_3b_1">---</div>
+                            </div>
+                            <div style="flex: 1; background: #f3f4f6; padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #667eea; letter-spacing: 0.08em;" id="predict2_3b_2">---</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem;">
                 <div style="font-size: 0.9rem; color: #92400e; line-height: 1.6;">
-                    <strong>💡 หมายเหตุ:</strong> ระบบกรองเลขที่ออกงวดปัจจุบันออกแล้ว เพื่อหลีกเลี่ยงการซ้ำซ้อน | ใช้เป็นข้อมูลประกอบการตัดสินใจเท่านั้น
+                    <strong>💡 หมายเหตุ:</strong> ระบบกรองเลขที่ออกงวดปัจจุบันออกแล้ว เพื่อหลีกเลี่ยงการซ้ำซ้อน | แต่ละชุดมีเลข: ท้าย 2 ตัว 3 ชุด, หน้า 3 ตัว 2 ชุด, ท้าย 3 ตัว 2 ชุด | ใช้เป็นข้อมูลประกอบการตัดสินใจเท่านั้น
                 </div>
             </div>
             </div>
@@ -328,14 +376,22 @@
             const back3 = generate3Digits(sortedB3, currentData.prize3Back);
             
             // แสดงผลชุดที่ 1
-            document.getElementById('predict1_2').textContent = tail2[0]?.combo || '--';
-            document.getElementById('predict1_3f').textContent = front3[0]?.combo || '---';
-            document.getElementById('predict1_3b').textContent = back3[0]?.combo || '---';
+            document.getElementById('predict1_2_1').textContent = tail2[0]?.combo || '--';
+            document.getElementById('predict1_2_2').textContent = tail2[1]?.combo || '--';
+            document.getElementById('predict1_2_3').textContent = tail2[2]?.combo || '--';
+            document.getElementById('predict1_3f_1').textContent = front3[0]?.combo || '---';
+            document.getElementById('predict1_3f_2').textContent = front3[1]?.combo || '---';
+            document.getElementById('predict1_3b_1').textContent = back3[0]?.combo || '---';
+            document.getElementById('predict1_3b_2').textContent = back3[1]?.combo || '---';
             
             // แสดงผลชุดที่ 2
-            document.getElementById('predict2_2').textContent = tail2[1]?.combo || '--';
-            document.getElementById('predict2_3f').textContent = front3[1]?.combo || '---';
-            document.getElementById('predict2_3b').textContent = back3[1]?.combo || '---';
+            document.getElementById('predict2_2_1').textContent = tail2[3]?.combo || '--';
+            document.getElementById('predict2_2_2').textContent = tail2[4]?.combo || '--';
+            document.getElementById('predict2_2_3').textContent = tail2[5]?.combo || '--';
+            document.getElementById('predict2_3f_1').textContent = front3[2]?.combo || '---';
+            document.getElementById('predict2_3f_2').textContent = front3[3]?.combo || '---';
+            document.getElementById('predict2_3b_1').textContent = back3[2]?.combo || '---';
+            document.getElementById('predict2_3b_2').textContent = back3[3]?.combo || '---';
         }
         function checkLottery() {
             if (!currentDrawData) return;
