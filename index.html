@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -18,27 +17,23 @@
         .status-badges { display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
         .badge { font-size: 0.85rem; font-weight: 500; padding: 0.35rem 1rem; border-radius: 50px; }
         .badge-live { background: #10b981; color: white; }
-        
         .prize-1 { background: linear-gradient(135deg, #fef3c7, #fde047); border-radius: 1rem; padding: 2.5rem; text-align: center; margin-bottom: 2rem; position: relative; overflow: hidden; }
         .prize-1::before { content: '🎉'; position: absolute; top: 10px; left: 20px; font-size: 2rem; opacity: 0.3; }
         .prize-1::after { content: '🎊'; position: absolute; bottom: 10px; right: 20px; font-size: 2rem; opacity: 0.3; }
         .prize-1 .label { font-size: 1.2rem; color: #92400e; font-weight: 600; margin-bottom: 0.5rem; }
         .prize-1 .number { font-size: 4.5rem; font-weight: 700; color: #b91c1c; letter-spacing: 0.15em; }
         .prize-1 .amount { font-size: 1rem; color: #92400e; margin-top: 0.5rem; font-weight: 500; }
-        
         .small-prizes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
         .prize-small { background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 0.75rem; padding: 1.5rem; text-align: center; transition: all 0.3s; }
         .prize-small:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-color: #667eea; }
         .prize-small .label { font-size: 1rem; color: #6b7280; font-weight: 500; margin-bottom: 0.5rem; }
         .prize-small .number { font-size: 2.2rem; font-weight: 700; color: #667eea; letter-spacing: 0.1em; margin-bottom: 0.25rem; }
         .prize-small .amount { font-size: 0.85rem; color: #9ca3af; }
-        
         .prizes-section { margin-bottom: 2rem; }
         .prizes-section h3 { font-size: 1.2rem; color: #374151; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e5e7eb; font-weight: 600; }
         .prize-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.75rem; max-height: 250px; overflow-y: auto; padding-right: 0.5rem; }
         .prize-item { background: white; border: 2px solid #e5e7eb; padding: 0.75rem; border-radius: 0.5rem; text-align: center; font-weight: 600; color: #1f2937; font-size: 1.1rem; letter-spacing: 0.05em; transition: all 0.2s; }
         .prize-item:hover { border-color: #667eea; background: #f5f3ff; color: #667eea; }
-        
         .check-section { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
         .check-box { background: #f9fafb; border-radius: 1rem; padding: 1.5rem; border: 1px solid #e5e7eb; }
         .check-box h3 { font-size: 1.3rem; color: #374151; margin-bottom: 1rem; font-weight: 600; }
@@ -47,23 +42,20 @@
         .btn { width: 100%; padding: 1rem; border: none; border-radius: 0.75rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
         .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; margin-top: 1rem; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4); }
-        
         .stat-value { font-size: 2.2rem; font-weight: 700; color: #667eea; margin: 0.25rem 0; letter-spacing: 0.1em; transition: color 0.3s; }
         .stat-card { background: white; padding: 1.2rem; border-radius: 0.75rem; border: 1px solid #e5e7eb; transition: all 0.2s; }
         .stat-card:hover { border-color: #667eea; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1); }
         .stat-card:hover .stat-value { color: #764ba2; }
-        
         .prize-grid::-webkit-scrollbar { width: 6px; }
         .prize-grid::-webkit-scrollbar-track { background: transparent; }
         .prize-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        
         @media (max-width: 768px) {
             .check-section { grid-template-columns: 1fr; }
             .small-prizes { grid-template-columns: 1fr; }
             .prize-1 .number { font-size: 3rem; }
             .card { padding: 1.5rem; }
+            .header h2 { font-size: 1.5rem !important; }
         }
-        
         .refresh-btn { position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s; z-index: 100; }
         .refresh-btn:hover { transform: scale(1.1); }
         .refresh-btn svg { width: 30px; height: 30px; }
@@ -73,24 +65,20 @@
     <button class="refresh-btn" onclick="location.reload(true)" title="รีเฟรชหน้าเว็บ">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
     </button>
-
     <div class="container">
         <div class="card">
             <div class="header">
                 <h1>🏆 ผลสลากกินแบ่งรัฐบาล</h1>
                 <p id="drawDate">รอสักครู่...</p>
-
                 <div class="status-badges">
                     <span id="statusBadge" class="badge badge-live">🟢 อัปเดตข้อมูลล่าสุด 16 ก.พ. 2569 เรียบร้อย</span>
                 </div>
             </div>
-
             <div class="prize-1">
                 <div class="label">รางวัลที่ 1</div>
                 <div class="number" id="prize1">------</div>
                 <div class="amount">รางวัลละ 6,000,000 บาท</div>
             </div>
-
             <div class="small-prizes">
                 <div class="prize-small">
                     <div class="label">เลขหน้า 3 ตัว</div>
@@ -108,43 +96,33 @@
                     <div class="amount">รางวัลละ 2,000 บาท</div>
                 </div>
             </div>
-
             <div class="prizes-section">
                 <h3>รางวัลที่ 2 (200,000 บาท)</h3>
                 <div class="prize-grid" id="prize2"></div>
             </div>
-
             <div class="prizes-section">
                 <h3>รางวัลที่ 3 (80,000 บาท)</h3>
                 <div class="prize-grid" id="prize3"></div>
             </div>
-
             <div class="prizes-section">
                 <h3>รางวัลที่ 4 (40,000 บาท)</h3>
                 <div class="prize-grid" id="prize4"></div>
             </div>
-
             <div class="prizes-section">
                 <h3>รางวัลที่ 5 (20,000 บาท)</h3>
                 <div class="prize-grid" id="prize5"></div>
             </div>
         </div>
-
         <div class="card">
             <div class="check-section">
                 <div class="check-box">
                     <h3>🔍 ตรวจรางวัลอัตโนมัติ</h3>
-                    <textarea id="lottoInput" placeholder="กรอกเลขสลาก 6 หลัก&#10;(เว้นวรรคหรือขึ้นบรรทัดใหม่ได้หลายใบ)"
-                              oninput="this.value = this.value.replace(/[^\d\s]/g, '');"
-                              onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); checkLottery(); }"></textarea>
+                    <textarea id="lottoInput" placeholder="กรอกเลขสลาก 6 หลัก&#10;(เว้นวรรคหรือขึ้นบรรทัดใหม่ได้หลายใบ)" oninput="this.value = this.value.replace(/[^\d\s]/g, '');" onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); checkLottery(); }"></textarea>
                     <button class="btn btn-primary" onclick="checkLottery()">ดำเนินการตรวจ</button>
                 </div>
-
                 <div class="check-box">
-                    <h3>📊 เลขเด่นจากสถิติ (ย้อนหลัง 5 ปี)</h3>
-                    <p style="font-size: 0.95rem; color: #6b7280; text-align: center; margin-bottom: 1.5rem;">
-                        เลขที่มีคะแนนสถิติสูงสุดจากข้อมูล 5 ปี
-                    </p>
+                    <h3>📊 เลขเด่นจากสถิติ (ฐาน 5 ปี + งวดปัจจุบัน)</h3>
+                    <p style="font-size: 0.95rem; color: #6b7280; text-align: center; margin-bottom: 1.5rem;">วิเคราะห์จากสถิติ 5 ปี + เลข 2 ตัว/3 ตัวงวดนี้</p>
                     <div style="text-align: center; display: grid; gap: 1rem;">
                         <div class="stat-card">
                             <div style="font-size: 1.1rem; color: #6b7280; font-weight: 500;">เด่นท้าย 2 ตัว</div>
@@ -162,12 +140,69 @@
                 </div>
             </div>
         </div>
+        
+        <div class="card">
+            <div class="header" style="margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.8rem; color: #667eea; margin-bottom: 0.5rem; font-weight: 700;">🔮 คาดการณ์งวดหน้า</h2>
+                <p style="font-size: 1rem; color: #6b7280;">วิเคราะห์จากสถิติ 5 ปี (หลีกเลี่ยงเลขซ้ำงวดปัจจุบัน)</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 1rem;">
+                <div style="background: linear-gradient(135deg, #fef3c7, #fde047); border-radius: 1rem; padding: 1.5rem; border: 2px solid #f59e0b;">
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #92400e;">🏆 ชุดที่ 1 (แนะนำ)</div>
+                        <div style="font-size: 0.85rem; color: #78350f; margin-top: 0.25rem;">คะแนนสูงสุด</div>
+                    </div>
+                    <div style="background: white; border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.5rem;">
+                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem;">ท้าย 2 ตัว</div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: #db2777; letter-spacing: 0.1em;" id="predict1_2">--</div>
+                    </div>
+                    <div style="background: white; border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.5rem;">
+                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem;">หน้า 3 ตัว</div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: #667eea; letter-spacing: 0.1em;" id="predict1_3f">---</div>
+                    </div>
+                    <div style="background: white; border-radius: 0.75rem; padding: 1rem;">
+                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem;">ท้าย 3 ตัว</div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: #667eea; letter-spacing: 0.1em;" id="predict1_3b">---</div>
+                    </div>
+                </div>
+                
+                <div style="background: #f9fafb; border-radius: 1rem; padding: 1.5rem; border: 2px solid #e5e7eb;">
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #374151;">🎯 ชุดที่ 2 (สำรอง)</div>
+                        <div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">คะแนนสูงรอง</div>
+                    </div>
+                    <div style="background: white; border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.5rem;">
+                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem;">ท้าย 2 ตัว</div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: #db2777; letter-spacing: 0.1em;" id="predict2_2">--</div>
+                    </div>
+                    <div style="background: white; border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.5rem;">
+                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem;">หน้า 3 ตัว</div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: #667eea; letter-spacing: 0.1em;" id="predict2_3f">---</div>
+                    </div>
+                    <div style="background: white; border-radius: 0.75rem; padding: 1rem;">
+                        <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem;">ท้าย 3 ตัว</div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: #667eea; letter-spacing: 0.1em;" id="predict2_3b">---</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem;">
+                <div style="font-size: 0.9rem; color: #92400e; line-height: 1.6;">
+                    <strong>💡 หมายเหตุ:</strong> ระบบกรองเลขที่ออกงวดปัจจุบันออกแล้ว เพื่อหลีกเลี่ยงการซ้ำซ้อน | ใช้เป็นข้อมูลประกอบการตัดสินใจเท่านั้น
+                </div>
+            </div>
+            </div>
+        </div>
     </div>
-
     <script>
         const sortNumbers = (arr) => arr.sort((a, b) => parseInt(a) - parseInt(b));
-
-        // 🟢 ข้อมูลจริงงวดวันที่ 16 ก.พ. 2569
+        
+        // 🔄 วิธีอัปเดตงวดใหม่: เปลี่ยนข้อมูลในส่วน currentDrawData ด้านล่าง
+        // ระบบจะคำนวณใหม่โดยอัตโนมัติโดยใช้:
+        // - ฐานข้อมูล 5 ปีเดิม (base5YearLast2, base5YearFront3, base5YearBack3)
+        // - เลขท้าย 2 ตัว, หน้า 3 ตัว, ท้าย 3 ตัวของงวดใหม่
+        
         const currentDrawData = {
             date: "16 กุมภาพันธ์ 2569",
             prize1: "340563",
@@ -179,100 +214,165 @@
             prize4: sortNumbers(["652050","234877","724668","315710","152090","753593","664492","813106","650620","870059","640597","791628","875341","330659","832376","106897","682866","339779","112342","825953","632544","252428","470652","354000","455955","441869","651065","553845","506803","346566","332801","399742","737542","267020","815586","010991","656539","029598","451375","544952","904667","120081","661302","251245","364692"]),
             prize5: sortNumbers(["413125","716936","880028","797775","045462","411418","242385","711698","507392","575953","362606","415333","409092","360378","764903","673579","950503","357774","354486","236326","612667","685397","449391","156166","965090","558699","515983","829801","791125","650786","091712","269636","097736","215785","942111","056569","820196","214935","092753","032041","989902","092591","199082","573135","311338","871406","760824","746865","183240","933783","710193","895106","232090","825988","210958","655877","415246","827871","701983","676645","259108","291189","643023","120396","994606","005392","100773","670634","129234","356600","641784","282191","151145","727700","626514","383949","906181","724659","461495","975701","809292","056966","306511","423105","499082","677699","748930","975000","961620","361467","879692","481006","188025","912351","814200","593410","982957","000181","926884","599711"])
         };
-
         const base5YearLast2 = { '0': 50, '1': 51, '2': 49, '3': 52, '4': 48, '5': 54, '6': 50, '7': 55, '8': 53, '9': 51 };
         const base5YearFront3 = { '0': 75, '1': 70, '2': 78, '3': 72, '4': 80, '5': 77, '6': 74, '7': 79, '8': 76, '9': 73 };
         const base5YearBack3 = { '0': 82, '1': 78, '2': 85, '3': 79, '4': 81, '5': 88, '6': 77, '7': 86, '8': 83, '9': 80 };
-
+        
+        // ⚠️ สำคัญ: ฐานข้อมูล 5 ปีข้างบนไม่ต้องแก้ไข ใช้ค่าเดิมทุกงวด
+        // มันเป็นข้อมูลสถิติสะสมที่ใช้เป็นพื้นฐานในการคำนวณ
         async function initApp() {
             displayData(currentDrawData);
         }
-
         function displayData(data) {
-            document.getElementById('drawDate').textContent = `งวดประจำวันที่ ${data.date}`;
+            document.getElementById('drawDate').textContent = 'งวดประจำวันที่ ' + data.date;
             document.getElementById('prize1').textContent = data.prize1;
             document.getElementById('prize3Front').textContent = data.prize3Front.join(' , ');
             document.getElementById('prize3Back').textContent = data.prize3Back.join(' , ');
             document.getElementById('prize2Back').textContent = data.prize2Back;
-
-            const renderPrizes = (prizes) => prizes.map(n => `<div class="prize-item">${n}</div>`).join('');
+            const renderPrizes = (prizes) => prizes.map(n => '<div class="prize-item">' + n + '</div>').join('');
             document.getElementById('prize2').innerHTML = renderPrizes(data.prize2);
             document.getElementById('prize3').innerHTML = renderPrizes(data.prize3);
             document.getElementById('prize4').innerHTML = renderPrizes(data.prize4);
             document.getElementById('prize5').innerHTML = renderPrizes(data.prize5);
-
             calculate5YearStats(data);
         }
-
         function calculate5YearStats(data) {
             let currentL2 = { ...base5YearLast2 };
             let currentF3 = { ...base5YearFront3 };
             let currentB3 = { ...base5YearBack3 };
-            const recencyWeight = 3; 
-
-            // เพิ่มน้ำหนักคะแนนจากงวดปัจจุบัน
-            for (let char of data.prize2Back) currentL2[char] += recencyWeight;
-            for (let p of data.prize3Front) { for (let char of p) currentF3[char] += recencyWeight; }
-            for (let p of data.prize3Back) { for (let char of p) currentB3[char] += recencyWeight; }
-
-            // ฟังก์ชันหาเลขที่มีคะแนนสูงสุด (เลือกตัวที่ดีที่สุด)
+            const recencyWeight = 3;
+            
+            // คำนวณจากเลขท้าย 2 ตัวของงวดปัจจุบัน
+            for (let char of data.prize2Back) {
+                currentL2[char] += recencyWeight;
+            }
+            
+            // คำนวณจากเลขหน้า 3 ตัวของงวดปัจจุบัน
+            for (let p of data.prize3Front) {
+                for (let char of p) {
+                    currentF3[char] += recencyWeight;
+                }
+            }
+            
+            // คำนวณจากเลขท้าย 3 ตัวของงวดปัจจุบัน
+            for (let p of data.prize3Back) {
+                for (let char of p) {
+                    currentB3[char] += recencyWeight;
+                }
+            }
+            
+            // เลือกเลขที่มีคะแนนสูงสุด
             const getBestDigits = (freqMap, count) => {
-                return Object.keys(freqMap)
-                    .sort((a, b) => freqMap[b] - freqMap[a])
-                    .slice(0, count)
-                    .join('');
+                return Object.keys(freqMap).sort((a, b) => freqMap[b] - freqMap[a]).slice(0, count).join('');
             };
-
-            // แสดงเลขที่ดีที่สุดจากสถิติ
+            
             document.getElementById('hot2').textContent = getBestDigits(currentL2, 2);
             document.getElementById('hot3F').textContent = getBestDigits(currentF3, 3);
             document.getElementById('hot3B').textContent = getBestDigits(currentB3, 3);
+            
+            // คำนวณคาดการณ์งวดหน้า
+            predictNextDraw(currentL2, currentF3, currentB3, data);
         }
-
+        
+        function predictNextDraw(scoreL2, scoreF3, scoreB3, currentData) {
+            // เรียงคะแนน
+            const sortedL2 = Object.entries(scoreL2).sort((a, b) => b[1] - a[1]);
+            const sortedF3 = Object.entries(scoreF3).sort((a, b) => b[1] - a[1]);
+            const sortedB3 = Object.entries(scoreB3).sort((a, b) => b[1] - a[1]);
+            
+            // ฟังก์ชันสร้างชุดเลข 2 ตัวที่ไม่ซ้ำ
+            const generate2Digits = (sorted, exclude) => {
+                const candidates = sorted.map(x => x[0]);
+                const combinations = [];
+                
+                for (let i = 0; i < candidates.length - 1; i++) {
+                    for (let j = i + 1; j < candidates.length; j++) {
+                        const combo = candidates[i] + candidates[j];
+                        if (combo !== exclude) {
+                            combinations.push({
+                                combo: combo,
+                                score: sorted[i][1] + sorted[j][1]
+                            });
+                        }
+                    }
+                }
+                
+                return combinations.sort((a, b) => b.score - a.score);
+            };
+            
+            // ฟังก์ชันสร้างชุดเลข 3 ตัวที่ไม่ซ้ำ
+            const generate3Digits = (sorted, exclude) => {
+                const candidates = sorted.map(x => x[0]);
+                const combinations = [];
+                
+                for (let i = 0; i < candidates.length - 2; i++) {
+                    for (let j = i + 1; j < candidates.length - 1; j++) {
+                        for (let k = j + 1; k < candidates.length; k++) {
+                            const combo = candidates[i] + candidates[j] + candidates[k];
+                            if (!exclude.includes(combo)) {
+                                combinations.push({
+                                    combo: combo,
+                                    score: sorted[i][1] + sorted[j][1] + sorted[k][1]
+                                });
+                            }
+                        }
+                    }
+                }
+                
+                return combinations.sort((a, b) => b.score - a.score);
+            };
+            
+            // สร้างชุดเลขที่ไม่ซ้ำ
+            const tail2 = generate2Digits(sortedL2, currentData.prize2Back);
+            const front3 = generate3Digits(sortedF3, currentData.prize3Front);
+            const back3 = generate3Digits(sortedB3, currentData.prize3Back);
+            
+            // แสดงผลชุดที่ 1
+            document.getElementById('predict1_2').textContent = tail2[0]?.combo || '--';
+            document.getElementById('predict1_3f').textContent = front3[0]?.combo || '---';
+            document.getElementById('predict1_3b').textContent = back3[0]?.combo || '---';
+            
+            // แสดงผลชุดที่ 2
+            document.getElementById('predict2_2').textContent = tail2[1]?.combo || '--';
+            document.getElementById('predict2_3f').textContent = front3[1]?.combo || '---';
+            document.getElementById('predict2_3b').textContent = back3[1]?.combo || '---';
+        }
         function checkLottery() {
             if (!currentDrawData) return;
             const input = document.getElementById('lottoInput').value;
             const numbers = [...new Set(input.match(/\b\d{6}\b/g))];
-            
             if (!numbers || numbers.length === 0) {
                 Swal.fire({ title: 'ไม่พบตัวเลข', text: 'กรุณากรอกเลข 6 หลักให้ครบถ้วน', icon: 'warning', confirmButtonColor: '#667eea' });
                 return;
             }
-
             let totalWin = 0;
             let results = [];
-
             numbers.forEach(num => {
                 let prizes = [];
                 let amount = 0;
-
                 if (num === currentDrawData.prize1) { prizes.push('🥇 รางวัลที่ 1'); amount += 6000000; }
                 if (currentDrawData.prize2.includes(num)) { prizes.push('🥈 รางวัลที่ 2'); amount += 200000; }
                 if (currentDrawData.prize3.includes(num)) { prizes.push('🥉 รางวัลที่ 3'); amount += 80000; }
                 if (currentDrawData.prize4.includes(num)) { prizes.push('รางวัลที่ 4'); amount += 40000; }
                 if (currentDrawData.prize5.includes(num)) { prizes.push('รางวัลที่ 5'); amount += 20000; }
-                
                 currentDrawData.prize3Front.forEach(p => { if (num.startsWith(p)) { prizes.push('เลขหน้า 3 ตัว'); amount += 4000; } });
                 currentDrawData.prize3Back.forEach(p => { if (num.endsWith(p)) { prizes.push('เลขท้าย 3 ตัว'); amount += 4000; } });
                 if (num.endsWith(currentDrawData.prize2Back)) { prizes.push('เลขท้าย 2 ตัว'); amount += 2000; }
-
                 if (amount > 0) {
                     results.push({ num, prizes: prizes.join(', '), amount });
                     totalWin += amount;
                 }
             });
-
-            let html = `<div style="margin-bottom: 1rem; font-size: 1rem; color: #6b7280; font-weight: 500;">ผลการตรวจงวด ${currentDrawData.date}</div>`;
-            
+            let html = '<div style="margin-bottom: 1rem; font-size: 1rem; color: #6b7280; font-weight: 500;">ผลการตรวจงวด ' + currentDrawData.date + '</div>';
             if (results.length > 0) {
-                html += `<div style="font-size: 1.6rem; font-weight: 700; color: #10b981; margin-bottom: 1.2rem;">🎉 ถูกรางวัลรวม ${totalWin.toLocaleString()} บาท</div>`;
+                html += '<div style="font-size: 1.6rem; font-weight: 700; color: #10b981; margin-bottom: 1.2rem;">🎉 ถูกรางวัลรวม ' + totalWin.toLocaleString() + ' บาท</div>';
                 html += '<div style="text-align: left; background: #f9fafb; padding: 1rem; border-radius: 0.5rem; max-height: 300px; overflow-y: auto;">';
                 results.forEach(r => {
-                    html += `<div style="margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid #e5e7eb;">
-                        <div style="font-weight: 700; font-size: 1.3rem; color: #1f2937; letter-spacing: 0.1em;">${r.num}</div>
-                        <div style="color: #6b7280; font-size: 1rem; margin-top: 0.25rem;">${r.prizes}</div>
-                        <div style="color: #10b981; font-weight: 600; margin-top: 0.25rem; font-size: 1.1rem;">💰 +${r.amount.toLocaleString()} ฿</div>
-                    </div>`;
+                    html += '<div style="margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid #e5e7eb;">';
+                    html += '<div style="font-weight: 700; font-size: 1.3rem; color: #1f2937; letter-spacing: 0.1em;">' + r.num + '</div>';
+                    html += '<div style="color: #6b7280; font-size: 1rem; margin-top: 0.25rem;">' + r.prizes + '</div>';
+                    html += '<div style="color: #10b981; font-weight: 600; margin-top: 0.25rem; font-size: 1.1rem;">💰 +' + r.amount.toLocaleString() + ' ฿</div>';
+                    html += '</div>';
                 });
                 html += '</div>';
                 Swal.fire({ html, icon: 'success', confirmButtonColor: '#667eea', width: '600px' });
@@ -282,7 +382,6 @@
                 Swal.fire({ html, icon: 'error', confirmButtonColor: '#667eea' });
             }
         }
-
         window.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
