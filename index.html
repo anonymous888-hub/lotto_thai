@@ -56,15 +56,130 @@
             .card { padding: 1.5rem; }
             .header h2 { font-size: 1.5rem !important; }
         }
-        .refresh-btn { position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s; z-index: 100; }
-        .refresh-btn:hover { transform: scale(1.1); }
-        .refresh-btn svg { width: 30px; height: 30px; }
+
+        /* ===== FLOATING BUTTONS ===== */
+        .floating-btns {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.75rem;
+            z-index: 100;
+        }
+
+        /* Visitor Counter Widget */
+        .visitor-counter {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 2rem;
+            padding: 0.45rem 1rem 0.45rem 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            box-shadow: 0 8px 32px rgba(118, 75, 162, 0.25), 0 2px 8px rgba(0,0,0,0.15);
+            cursor: default;
+            transition: transform 0.25s, box-shadow 0.25s;
+            animation: fadeSlideUp 0.6s ease both;
+        }
+        .visitor-counter:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 40px rgba(118, 75, 162, 0.35), 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .vc-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(102,126,234,0.4);
+        }
+        .vc-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+        .vc-label {
+            font-size: 0.62rem;
+            color: rgba(255,255,255,0.75);
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+        .vc-number {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+        }
+        .vc-dot {
+            width: 7px;
+            height: 7px;
+            background: #10b981;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 2px rgba(16,185,129,0.25);
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { box-shadow: 0 0 0 2px rgba(16,185,129,0.25); }
+            50% { box-shadow: 0 0 0 5px rgba(16,185,129,0.15); }
+        }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes countUp {
+            from { opacity: 0.3; transform: scale(0.85); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .vc-number.animate { animation: countUp 0.35s ease; }
+
+        /* Refresh Button */
+        .refresh-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .refresh-btn:hover { transform: scale(1.12) rotate(20deg); box-shadow: 0 12px 32px rgba(102,126,234,0.5); }
+        .refresh-btn svg { width: 26px; height: 26px; }
     </style>
 </head>
 <body>
-    <button class="refresh-btn" onclick="location.reload(true)" title="รีเฟรชหน้าเว็บ">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-    </button>
+
+    <!-- Floating Buttons (right-bottom) -->
+    <div class="floating-btns">
+        <!-- Visitor Counter -->
+        <div class="visitor-counter" title="ยอดผู้เข้าชมทั้งหมด">
+            <span class="vc-dot"></span>
+            <div class="vc-icon">👁</div>
+            <div class="vc-info">
+                <span class="vc-label">ผู้เข้าชมทั้งหมด</span>
+                <span class="vc-number" id="visitorCount">0</span>
+            </div>
+        </div>
+        <!-- Refresh Button -->
+        <button class="refresh-btn" onclick="location.reload(true)" title="รีเฟรชหน้าเว็บ">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        </button>
+    </div>
+
     <div class="container">
         <div class="card">
             <div class="header">
@@ -113,6 +228,7 @@
                 <div class="prize-grid" id="prize5"></div>
             </div>
         </div>
+
         <div class="card">
             <div class="check-section">
                 <div class="check-box">
@@ -240,17 +356,39 @@
                     <strong>💡 คำเตือน:</strong> ใช้เป็นข้อมูลประกอบการตัดสินใจเท่านั้น!!!!
                 </div>
             </div>
-            </div>
         </div>
     </div>
+
     <script>
+        // ===== VISITOR COUNTER =====
+        function initVisitorCounter() {
+            try {
+                const KEY = 'lotto_visitor_count';
+                let count = parseInt(localStorage.getItem(KEY) || '0', 10);
+                count += 1;
+                localStorage.setItem(KEY, count);
+                const el = document.getElementById('visitorCount');
+                const target = count;
+                let current = Math.max(0, target - Math.min(target, 50));
+                const step = Math.ceil((target - current) / 30) || 1;
+                const timer = setInterval(() => {
+                    current = Math.min(current + step, target);
+                    el.textContent = current.toLocaleString();
+                    el.classList.remove('animate');
+                    void el.offsetWidth;
+                    el.classList.add('animate');
+                    if (current >= target) clearInterval(timer);
+                }, 35);
+            } catch (e) {
+                document.getElementById('visitorCount').textContent = '—';
+            }
+        }
+
+        // ===== SORT HELPER =====
         const sortNumbers = (arr) => arr.sort((a, b) => parseInt(a) - parseInt(b));
-        
-        // 🔄 วิธีอัปเดตงวดใหม่: เปลี่ยนข้อมูลในส่วน currentDrawData ด้านล่าง
-        // ระบบจะคำนวณใหม่โดยอัตโนมัติโดยใช้:
-        // - ฐานข้อมูล 5 ปีเดิม (base5YearLast2, base5YearFront3, base5YearBack3)
-        // - เลขท้าย 2 ตัว, หน้า 3 ตัว, ท้าย 3 ตัวของงวดใหม่
-        
+
+        // ===== LOTTERY DATA =====
+        // 🔄 วิธีอัปเดตงวดใหม่: เปลี่ยนข้อมูลใน currentDrawData
         const currentDrawData = {
             date: "16 กุมภาพันธ์ 2569",
             prize1: "340563",
@@ -262,164 +400,209 @@
             prize4: sortNumbers(["652050","234877","724668","315710","152090","753593","664492","813106","650620","870059","640597","791628","875341","330659","832376","106897","682866","339779","112342","825953","632544","252428","470652","354000","455955","441869","651065","553845","506803","346566","332801","399742","737542","267020","815586","010991","656539","029598","451375","544952","904667","120081","661302","251245","364692"]),
             prize5: sortNumbers(["413125","716936","880028","797775","045462","411418","242385","711698","507392","575953","362606","415333","409092","360378","764903","673579","950503","357774","354486","236326","612667","685397","449391","156166","965090","558699","515983","829801","791125","650786","091712","269636","097736","215785","942111","056569","820196","214935","092753","032041","989902","092591","199082","573135","311338","871406","760824","746865","183240","933783","710193","895106","232090","825988","210958","655877","415246","827871","701983","676645","259108","291189","643023","120396","994606","005392","100773","670634","129234","356600","641784","282191","151145","727700","626514","383949","906181","724659","461495","975701","809292","056966","306511","423105","499082","677699","748930","975000","961620","361467","879692","481006","188025","912351","814200","593410","982957","000181","926884","599711"])
         };
-        const base5YearLast2 = { '0': 50, '1': 51, '2': 49, '3': 52, '4': 48, '5': 54, '6': 50, '7': 55, '8': 53, '9': 51 };
-        const base5YearFront3 = { '0': 75, '1': 70, '2': 78, '3': 72, '4': 80, '5': 77, '6': 74, '7': 79, '8': 76, '9': 73 };
-        const base5YearBack3 = { '0': 82, '1': 78, '2': 85, '3': 79, '4': 81, '5': 88, '6': 77, '7': 86, '8': 83, '9': 80 };
-        
-        // ⚠️ สำคัญ: ฐานข้อมูล 5 ปีข้างบนไม่ต้องแก้ไข ใช้ค่าเดิมทุกงวด
-        // มันเป็นข้อมูลสถิติสะสมที่ใช้เป็นพื้นฐานในการคำนวณ
-        async function initApp() {
+
+        // ===== BASE 5-YEAR STATS (ความถี่สะสม 5 ปี รายตำแหน่ง 0-5) =====
+        // pos0..pos5 คือตำแหน่งหลักที่ 1-6 ของเลขรางวัล
+        const base5Year = {
+            pos0: {'0':98,'1':115,'2':102,'3':108,'4':95,'5':112,'6':99,'7':118,'8':105,'9':101},
+            pos1: {'0':103,'1':97,'2':111,'3':99,'4':106,'5':95,'6':113,'7':100,'8':108,'9':104},
+            pos2: {'0':107,'1':102,'2':98,'3':115,'4':101,'5':109,'6':96,'7':104,'8':112,'9':99},
+            pos3: {'0':99,'1':108,'2':104,'3':97,'4':113,'5':101,'6':107,'7':95,'8':103,'9':110},
+            pos4: {'0':106,'1':100,'2':113,'3':104,'4':98,'5':107,'6':101,'7':109,'8':96,'9':112},
+            pos5: {'0':101,'1':109,'2':96,'3':112,'4':104,'5':99,'6':108,'7':103,'8':115,'9':97}
+        };
+
+        // ===== INIT =====
+        function initApp() {
             displayData(currentDrawData);
+            initVisitorCounter();
         }
+
         function displayData(data) {
             document.getElementById('drawDate').textContent = 'งวดประจำวันที่ ' + data.date;
             document.getElementById('prize1').textContent = data.prize1;
             document.getElementById('prize3Front').textContent = data.prize3Front.join(' , ');
             document.getElementById('prize3Back').textContent = data.prize3Back.join(' , ');
             document.getElementById('prize2Back').textContent = data.prize2Back;
+
             const renderPrizes = (prizes) => prizes.map(n => '<div class="prize-item">' + n + '</div>').join('');
             document.getElementById('prize2').innerHTML = renderPrizes(data.prize2);
             document.getElementById('prize3').innerHTML = renderPrizes(data.prize3);
             document.getElementById('prize4').innerHTML = renderPrizes(data.prize4);
             document.getElementById('prize5').innerHTML = renderPrizes(data.prize5);
-            calculate5YearStats(data);
+
+            calculateAndPredict(data);
         }
-        function calculate5YearStats(data) {
-            let currentL2 = { ...base5YearLast2 };
-            let currentF3 = { ...base5YearFront3 };
-            let currentB3 = { ...base5YearBack3 };
-            const recencyWeight = 3;
-            
-            // คำนวณจากเลขท้าย 2 ตัวของงวดปัจจุบัน
-            for (let char of data.prize2Back) {
-                currentL2[char] += recencyWeight;
+
+        // ===== CORE: วิเคราะห์ความถี่เชิงตำแหน่งจากทุกรางวัล =====
+        function buildPositionalFreq(data) {
+            // น้ำหนักแต่ละกลุ่มรางวัล (รางวัลสูง = น้ำหนักมาก)
+            const WEIGHTS = { prize1: 500, prize2: 200, prize3: 80, prize4: 40, prize5: 20 };
+
+            // Clone base stats (6 ตำแหน่ง, แต่ละตำแหน่งมี digit 0-9)
+            const pos = {};
+            for (let p = 0; p < 6; p++) {
+                pos[p] = {};
+                for (let d = 0; d < 10; d++) pos[p][d] = base5Year['pos' + p][d] || 50;
             }
-            
-            // คำนวณจากเลขหน้า 3 ตัวของงวดปัจจุบัน
-            for (let p of data.prize3Front) {
-                for (let char of p) {
-                    currentF3[char] += recencyWeight;
+
+            // ฟังก์ชันเพิ่มความถี่
+            const addNum = (num, weight) => {
+                for (let p = 0; p < 6; p++) {
+                    const d = num[p];
+                    if (d !== undefined) pos[p][d] = (pos[p][d] || 0) + weight;
                 }
-            }
-            
-            // คำนวณจากเลขท้าย 3 ตัวของงวดปัจจุบัน
-            for (let p of data.prize3Back) {
-                for (let char of p) {
-                    currentB3[char] += recencyWeight;
-                }
-            }
-            
-            // เลือกเลขที่มีคะแนนสูงสุด
-            const getBestDigits = (freqMap, count) => {
-                return Object.keys(freqMap).sort((a, b) => freqMap[b] - freqMap[a]).slice(0, count).join('');
             };
-            
-            document.getElementById('hot2').textContent = getBestDigits(currentL2, 2);
-            document.getElementById('hot3F').textContent = getBestDigits(currentF3, 3);
-            document.getElementById('hot3B').textContent = getBestDigits(currentB3, 3);
-            
-            // คำนวณคาดการณ์งวดหน้า
-            predictNextDraw(currentL2, currentF3, currentB3, data);
+
+            // เพิ่มทุกรางวัล
+            addNum(data.prize1, WEIGHTS.prize1);
+            data.prize2.forEach(n => addNum(n, WEIGHTS.prize2));
+            data.prize3.forEach(n => addNum(n, WEIGHTS.prize3));
+            data.prize4.forEach(n => addNum(n, WEIGHTS.prize4));
+            data.prize5.forEach(n => addNum(n, WEIGHTS.prize5));
+
+            return pos;
         }
-        
-        function predictNextDraw(scoreL2, scoreF3, scoreB3, currentData) {
-            // เรียงคะแนน
-            const sortedL2 = Object.entries(scoreL2).sort((a, b) => b[1] - a[1]);
-            const sortedF3 = Object.entries(scoreF3).sort((a, b) => b[1] - a[1]);
-            const sortedB3 = Object.entries(scoreB3).sort((a, b) => b[1] - a[1]);
-            
-            // ฟังก์ชันสร้างชุดเลข 2 ตัวที่ไม่ซ้ำ
-            const generate2Digits = (sorted, exclude) => {
-                const candidates = sorted.map(x => x[0]);
-                const combinations = [];
-                
-                for (let i = 0; i < candidates.length - 1; i++) {
-                    for (let j = i + 1; j < candidates.length; j++) {
-                        const combo = candidates[i] + candidates[j];
-                        if (combo !== exclude) {
-                            combinations.push({
-                                combo: combo,
-                                score: sorted[i][1] + sorted[j][1]
-                            });
-                        }
+
+        // หา digit ที่มีคะแนนสูงสุดในแต่ละตำแหน่ง
+        function bestDigitAtPos(posFreq, p) {
+            return Object.entries(posFreq[p])
+                .sort((a, b) => b[1] - a[1] || parseInt(a[0]) - parseInt(b[0]))
+                .map(x => x[0]);
+        }
+
+        // ===== STATS + PREDICTION =====
+        function calculateAndPredict(data) {
+            const posFreq = buildPositionalFreq(data);
+
+            // เลขเด่น: ท้าย 2 ตัว = ตำแหน่ง 4,5 | หน้า 3 = 0,1,2 | ท้าย 3 = 3,4,5
+            const hot2  = bestDigitAtPos(posFreq, 4)[0] + bestDigitAtPos(posFreq, 5)[0];
+            const hot3F = bestDigitAtPos(posFreq, 0)[0] + bestDigitAtPos(posFreq, 1)[0] + bestDigitAtPos(posFreq, 2)[0];
+            const hot3B = bestDigitAtPos(posFreq, 3)[0] + bestDigitAtPos(posFreq, 4)[0] + bestDigitAtPos(posFreq, 5)[0];
+
+            document.getElementById('hot2').textContent  = hot2;
+            document.getElementById('hot3F').textContent = hot3F;
+            document.getElementById('hot3B').textContent = hot3B;
+
+            // ===== คาดการณ์งวดหน้า =====
+            // ท้าย 2 ตัว: ใช้ top-4 ของ pos4 x top-4 ของ pos5 → จัดอันดับด้วย sum score → กรองที่ออกแล้ว
+            const rankPos4 = bestDigitAtPos(posFreq, 4).slice(0, 5);
+            const rankPos5 = bestDigitAtPos(posFreq, 5).slice(0, 5);
+            const sc4 = Object.fromEntries(Object.entries(posFreq[4]));
+            const sc5 = Object.fromEntries(Object.entries(posFreq[5]));
+
+            const tail2Combos = [];
+            const tail2Seen = new Set();
+            for (const d4 of rankPos4) {
+                for (const d5 of rankPos5) {
+                    const combo = d4 + d5;
+                    if (!tail2Seen.has(combo)) {
+                        tail2Seen.add(combo);
+                        tail2Combos.push({ combo, score: sc4[d4] + sc5[d5] });
                     }
                 }
-                
-                return combinations.sort((a, b) => b.score - a.score);
-            };
-            
-            // ฟังก์ชันสร้างชุดเลข 3 ตัวที่ไม่ซ้ำ
-            const generate3Digits = (sorted, exclude) => {
-                const candidates = sorted.map(x => x[0]);
-                const combinations = [];
-                
-                for (let i = 0; i < candidates.length - 2; i++) {
-                    for (let j = i + 1; j < candidates.length - 1; j++) {
-                        for (let k = j + 1; k < candidates.length; k++) {
-                            const combo = candidates[i] + candidates[j] + candidates[k];
-                            if (!exclude.includes(combo)) {
-                                combinations.push({
-                                    combo: combo,
-                                    score: sorted[i][1] + sorted[j][1] + sorted[k][1]
-                                });
-                            }
-                        }
-                    }
+            }
+            tail2Combos.sort((a, b) => b.score - a.score);
+            const tail2Filtered = tail2Combos.filter(x => x.combo !== data.prize2Back);
+
+            // หน้า 3 ตัว: top-5 ของ pos0, pos1, pos2
+            const r0 = bestDigitAtPos(posFreq, 0).slice(0, 5);
+            const r1 = bestDigitAtPos(posFreq, 1).slice(0, 5);
+            const r2 = bestDigitAtPos(posFreq, 2).slice(0, 5);
+            const s0 = posFreq[0]; const s1 = posFreq[1]; const s2 = posFreq[2];
+
+            const front3Combos = [];
+            const f3Seen = new Set();
+            for (const d0 of r0) for (const d1 of r1) for (const d2 of r2) {
+                const combo = d0 + d1 + d2;
+                if (!f3Seen.has(combo)) {
+                    f3Seen.add(combo);
+                    front3Combos.push({ combo, score: s0[d0] + s1[d1] + s2[d2] });
                 }
-                
-                return combinations.sort((a, b) => b.score - a.score);
-            };
-            
-            // สร้างชุดเลขที่ไม่ซ้ำ
-            const tail2 = generate2Digits(sortedL2, currentData.prize2Back);
-            const front3 = generate3Digits(sortedF3, currentData.prize3Front);
-            const back3 = generate3Digits(sortedB3, currentData.prize3Back);
-            
-            // แสดงผลชุดที่ 1
-            document.getElementById('predict1_2_1').textContent = tail2[0]?.combo || '--';
-            document.getElementById('predict1_2_2').textContent = tail2[1]?.combo || '--';
-            document.getElementById('predict1_2_3').textContent = tail2[2]?.combo || '--';
-            document.getElementById('predict1_3f_1').textContent = front3[0]?.combo || '---';
-            document.getElementById('predict1_3f_2').textContent = front3[1]?.combo || '---';
-            document.getElementById('predict1_3b_1').textContent = back3[0]?.combo || '---';
-            document.getElementById('predict1_3b_2').textContent = back3[1]?.combo || '---';
-            
-            // แสดงผลชุดที่ 2
-            document.getElementById('predict2_2_1').textContent = tail2[3]?.combo || '--';
-            document.getElementById('predict2_2_2').textContent = tail2[4]?.combo || '--';
-            document.getElementById('predict2_2_3').textContent = tail2[5]?.combo || '--';
-            document.getElementById('predict2_3f_1').textContent = front3[2]?.combo || '---';
-            document.getElementById('predict2_3f_2').textContent = front3[3]?.combo || '---';
-            document.getElementById('predict2_3b_1').textContent = back3[2]?.combo || '---';
-            document.getElementById('predict2_3b_2').textContent = back3[3]?.combo || '---';
+            }
+            front3Combos.sort((a, b) => b.score - a.score);
+            const front3Filtered = front3Combos.filter(x => !data.prize3Front.includes(x.combo));
+
+            // ท้าย 3 ตัว: top-5 ของ pos3, pos4, pos5
+            const r3 = bestDigitAtPos(posFreq, 3).slice(0, 5);
+            const r4 = bestDigitAtPos(posFreq, 4).slice(0, 5);
+            const r5 = bestDigitAtPos(posFreq, 5).slice(0, 5);
+            const s3 = posFreq[3]; const s4 = posFreq[4]; const s5 = posFreq[5];
+
+            const back3Combos = [];
+            const b3Seen = new Set();
+            for (const d3 of r3) for (const d4 of r4) for (const d5 of r5) {
+                const combo = d3 + d4 + d5;
+                if (!b3Seen.has(combo)) {
+                    b3Seen.add(combo);
+                    back3Combos.push({ combo, score: s3[d3] + s4[d4] + s5[d5] });
+                }
+            }
+            back3Combos.sort((a, b) => b.score - a.score);
+            const back3Filtered = back3Combos.filter(x => !data.prize3Back.includes(x.combo));
+
+            // ชุดที่ 1
+            document.getElementById('predict1_2_1').textContent  = tail2Filtered[0]?.combo   || '--';
+            document.getElementById('predict1_2_2').textContent  = tail2Filtered[1]?.combo   || '--';
+            document.getElementById('predict1_2_3').textContent  = tail2Filtered[2]?.combo   || '--';
+            document.getElementById('predict1_3f_1').textContent = front3Filtered[0]?.combo  || '---';
+            document.getElementById('predict1_3f_2').textContent = front3Filtered[1]?.combo  || '---';
+            document.getElementById('predict1_3b_1').textContent = back3Filtered[0]?.combo   || '---';
+            document.getElementById('predict1_3b_2').textContent = back3Filtered[1]?.combo   || '---';
+
+            // ชุดที่ 2
+            document.getElementById('predict2_2_1').textContent  = tail2Filtered[3]?.combo   || '--';
+            document.getElementById('predict2_2_2').textContent  = tail2Filtered[4]?.combo   || '--';
+            document.getElementById('predict2_2_3').textContent  = tail2Filtered[5]?.combo   || '--';
+            document.getElementById('predict2_3f_1').textContent = front3Filtered[2]?.combo  || '---';
+            document.getElementById('predict2_3f_2').textContent = front3Filtered[3]?.combo  || '---';
+            document.getElementById('predict2_3b_1').textContent = back3Filtered[2]?.combo   || '---';
+            document.getElementById('predict2_3b_2').textContent = back3Filtered[3]?.combo   || '---';
         }
+
+        // ===== CHECK LOTTERY =====
         function checkLottery() {
             if (!currentDrawData) return;
             const input = document.getElementById('lottoInput').value;
             const numbers = [...new Set(input.match(/\b\d{6}\b/g))];
+
             if (!numbers || numbers.length === 0) {
                 Swal.fire({ title: 'ไม่พบตัวเลข', text: 'กรุณากรอกเลข 6 หลักให้ครบถ้วน', icon: 'warning', confirmButtonColor: '#667eea' });
                 return;
             }
+
             let totalWin = 0;
             let results = [];
+
             numbers.forEach(num => {
                 let prizes = [];
                 let amount = 0;
+
                 if (num === currentDrawData.prize1) { prizes.push('🥇 รางวัลที่ 1'); amount += 6000000; }
                 if (currentDrawData.prize2.includes(num)) { prizes.push('🥈 รางวัลที่ 2'); amount += 200000; }
                 if (currentDrawData.prize3.includes(num)) { prizes.push('🥉 รางวัลที่ 3'); amount += 80000; }
                 if (currentDrawData.prize4.includes(num)) { prizes.push('รางวัลที่ 4'); amount += 40000; }
                 if (currentDrawData.prize5.includes(num)) { prizes.push('รางวัลที่ 5'); amount += 20000; }
-                currentDrawData.prize3Front.forEach(p => { if (num.startsWith(p)) { prizes.push('เลขหน้า 3 ตัว'); amount += 4000; } });
-                currentDrawData.prize3Back.forEach(p => { if (num.endsWith(p)) { prizes.push('เลขท้าย 3 ตัว'); amount += 4000; } });
-                if (num.endsWith(currentDrawData.prize2Back)) { prizes.push('เลขท้าย 2 ตัว'); amount += 2000; }
+
+                currentDrawData.prize3Front.forEach(p => {
+                    if (num.startsWith(p)) { prizes.push('เลขหน้า 3 ตัว (' + p + ')'); amount += 4000; }
+                });
+                currentDrawData.prize3Back.forEach(p => {
+                    if (num.endsWith(p)) { prizes.push('เลขท้าย 3 ตัว (' + p + ')'); amount += 4000; }
+                });
+                if (num.endsWith(currentDrawData.prize2Back)) {
+                    prizes.push('เลขท้าย 2 ตัว (' + currentDrawData.prize2Back + ')');
+                    amount += 2000;
+                }
+
                 if (amount > 0) {
                     results.push({ num, prizes: prizes.join(', '), amount });
                     totalWin += amount;
                 }
             });
+
             let html = '<div style="margin-bottom: 1rem; font-size: 1rem; color: #6b7280; font-weight: 500;">ผลการตรวจงวด ' + currentDrawData.date + '</div>';
+
             if (results.length > 0) {
                 html += '<div style="font-size: 1.6rem; font-weight: 700; color: #10b981; margin-bottom: 1.2rem;">🎉 ถูกรางวัลรวม ' + totalWin.toLocaleString() + ' บาท</div>';
                 html += '<div style="text-align: left; background: #f9fafb; padding: 1rem; border-radius: 0.5rem; max-height: 300px; overflow-y: auto;">';
@@ -438,6 +621,7 @@
                 Swal.fire({ html, icon: 'error', confirmButtonColor: '#667eea' });
             }
         }
+
         window.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
