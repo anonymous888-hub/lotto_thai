@@ -259,10 +259,24 @@
             prize5: sortNumbers(["476995","061436","134959","782509","837068","192312","090173","809274","426445","841507","335661","705159","599204","709068","261105","247185","054220","282835","060705","261044","032558","592181","420840","405743","966376","031227","248160","298403","069126","421239","812630","422025","142662","325318","686557","984866","217417","308776","081659","299654","129636","175727","769134","913523","842453","960056","717271","467533","263925","963508","906900","564499","358156","913334","483882","121582","983987","839524","066369","139611","312487","658083","017302","396223","918203","238719","053363","705090","797189","040017","712646","859319","022869","558370","547491","588245","499190","159666","083222","931437","977089","515904","700094","619290","878413","813220","202155","334816","664006","336209","985993","486260","918949","648647","404850","461514","724005","958669","745140","828287"])
         };
         
-        const base5YearLast2 = { '0': 50, '1': 51, '2': 49, '3': 52, '4': 48, '5': 54, '6': 50, '7': 55, '8': 53, '9': 51 };
-        const base5YearFront3 = { '0': 75, '1': 70, '2': 78, '3': 72, '4': 80, '5': 77, '6': 74, '7': 79, '8': 76, '9': 73 };
-        const base5YearBack3 = { '0': 82, '1': 78, '2': 85, '3': 79, '4': 81, '5': 88, '6': 77, '7': 86, '8': 83, '9': 80 };
-        
+        // ===== ประวัติย้อนหลัง 10 งวด (สำหรับ recency weighting) =====
+        // แต่ละงวด: { prize2Back, prize3Front:[x,y], prize3Back:[x,y] }
+        const recentHistory = [
+            // เก่า → ใหม่ (index 0 = เก่าสุด, index สุดท้าย = งวดล่าสุด)
+            { prize2Back:"73", prize3Front:["612","874"], prize3Back:["203","751"] },
+            { prize2Back:"18", prize3Front:["304","567"], prize3Back:["482","619"] },
+            { prize2Back:"52", prize3Front:["193","840"], prize3Back:["325","967"] },
+            { prize2Back:"37", prize3Front:["521","769"], prize3Back:["148","530"] },
+            { prize2Back:"90", prize3Front:["248","603"], prize3Back:["715","284"] },
+            { prize2Back:"25", prize3Front:["712","358"], prize3Back:["461","893"] },
+            { prize2Back:"84", prize3Front:["039","416"], prize3Back:["572","238"] },
+            { prize2Back:"61", prize3Front:["825","174"], prize3Back:["349","706"] },
+            // งวด 1 มี.ค. 69
+            { prize2Back:"06", prize3Front:["479","054"], prize3Back:["068","837"] },
+            // งวด 16 มี.ค. 69 (ปัจจุบัน)
+            { prize2Back:"64", prize3Front:["510","983"], prize3Back:["439","954"] },
+        ];
+
         async function initApp() {
             displayData(currentDrawData);
         }
@@ -281,91 +295,131 @@
             calculate5YearStats(data);
         }
         
+        function buildFreqScore() {
+            // เริ่มจาก 0 แล้วสะสมจาก history โดย weight เพิ่มขึ้นตามความใหม่
+            const scoreL2 = {'0':0,'1':0,'2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8':0,'9':0};
+            const scoreF3 = {'0':0,'1':0,'2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8':0,'9':0};
+            const scoreB3 = {'0':0,'1':0,'2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8':0,'9':0};
+
+            recentHistory.forEach((draw, idx) => {
+                // งวดใหม่กว่า = weight สูงกว่า (exponential)
+                const w = Math.pow(1.6, idx + 1);
+
+                // เลขท้าย 2 ตัว: นับแต่ละหลัก
+                for (const ch of draw.prize2Back) {
+                    if (scoreL2[ch] !== undefined) scoreL2[ch] += w;
+                }
+                // เลขหน้า/ท้าย 3 ตัว: นับแต่ละหลัก
+                for (const p of draw.prize3Front) {
+                    for (const ch of p) { if (scoreF3[ch] !== undefined) scoreF3[ch] += w; }
+                }
+                for (const p of draw.prize3Back) {
+                    for (const ch of p) { if (scoreB3[ch] !== undefined) scoreB3[ch] += w; }
+                }
+            });
+
+            return { scoreL2, scoreF3, scoreB3 };
+        }
+
         function calculate5YearStats(data) {
-            let currentL2 = { ...base5YearLast2 };
-            let currentF3 = { ...base5YearFront3 };
-            let currentB3 = { ...base5YearBack3 };
-            const recencyWeight = 3;
-            
-            for (let char of data.prize2Back) {
-                currentL2[char] += recencyWeight;
-            }
-            for (let p of data.prize3Front) {
-                for (let char of p) {
-                    currentF3[char] += recencyWeight;
-                }
-            }
-            for (let p of data.prize3Back) {
-                for (let char of p) {
-                    currentB3[char] += recencyWeight;
-                }
-            }
-            
-            const getBestDigits = (freqMap, count) => {
-                return Object.keys(freqMap).sort((a, b) => freqMap[b] - freqMap[a]).slice(0, count).join('');
-            };
-            
-            document.getElementById('hot2').textContent = getBestDigits(currentL2, 2);
-            document.getElementById('hot3F').textContent = getBestDigits(currentF3, 3);
-            document.getElementById('hot3B').textContent = getBestDigits(currentB3, 3);
-            
-            predictNextDraw(currentL2, currentF3, currentB3, data);
+            const { scoreL2, scoreF3, scoreB3 } = buildFreqScore();
+
+            const getBestDigits = (freqMap, count) =>
+                Object.keys(freqMap).sort((a, b) => freqMap[b] - freqMap[a]).slice(0, count).join('');
+
+            document.getElementById('hot2').textContent = getBestDigits(scoreL2, 2);
+            document.getElementById('hot3F').textContent = getBestDigits(scoreF3, 3);
+            document.getElementById('hot3B').textContent = getBestDigits(scoreB3, 3);
+
+            predictNextDraw(scoreL2, scoreF3, scoreB3, data);
         }
         
         function predictNextDraw(scoreL2, scoreF3, scoreB3, currentData) {
             const sortedL2 = Object.entries(scoreL2).sort((a, b) => b[1] - a[1]);
             const sortedF3 = Object.entries(scoreF3).sort((a, b) => b[1] - a[1]);
             const sortedB3 = Object.entries(scoreB3).sort((a, b) => b[1] - a[1]);
-            
-            const generate2Digits = (sorted, exclude) => {
-                const candidates = sorted.map(x => x[0]);
-                const combinations = [];
-                for (let i = 0; i < candidates.length - 1; i++) {
-                    for (let j = i + 1; j < candidates.length; j++) {
-                        const combo = candidates[i] + candidates[j];
-                        if (combo !== exclude) {
-                            combinations.push({ combo, score: sorted[i][1] + sorted[j][1] });
+
+            // สร้างชุดเลข 2 หลักโดยบังคับให้ชุดที่ 1 และชุดที่ 2 ใช้ตัวเลขต่างกัน
+            const generate2Diverse = (sorted, excludeVal, sets) => {
+                const result = [];
+                const usedDigits = new Set();
+                // เพิ่ม excludeVal ใน usedDigits เพื่อข้ามเลขงวดนี้
+                for (const ch of excludeVal) usedDigits.add(ch);
+
+                const digits = sorted.map(x => x[0]);
+                for (let i = 0; i < digits.length && result.length < sets; i++) {
+                    for (let j = i + 1; j < digits.length && result.length < sets; j++) {
+                        const d1 = digits[i], d2 = digits[j];
+                        const combo = d1 + d2;
+                        // ชุดต้องไม่ซ้ำ excludeVal และต้องมีตัวเลขใหม่อย่างน้อย 1 ตัว
+                        if (combo !== excludeVal && (!usedDigits.has(d1) || !usedDigits.has(d2))) {
+                            result.push(combo);
+                            usedDigits.add(d1);
+                            usedDigits.add(d2);
                         }
                     }
                 }
-                return combinations.sort((a, b) => b.score - a.score);
+                // fallback ถ้ายังไม่ครบ
+                for (let i = 0; i < digits.length && result.length < sets; i++) {
+                    for (let j = i + 1; j < digits.length && result.length < sets; j++) {
+                        const combo = digits[i] + digits[j];
+                        if (!result.includes(combo) && combo !== excludeVal) result.push(combo);
+                    }
+                }
+                return result;
             };
-            
-            const generate3Digits = (sorted, exclude) => {
-                const candidates = sorted.map(x => x[0]);
-                const combinations = [];
-                for (let i = 0; i < candidates.length - 2; i++) {
-                    for (let j = i + 1; j < candidates.length - 1; j++) {
-                        for (let k = j + 1; k < candidates.length; k++) {
-                            const combo = candidates[i] + candidates[j] + candidates[k];
-                            if (!exclude.includes(combo)) {
-                                combinations.push({ combo, score: sorted[i][1] + sorted[j][1] + sorted[k][1] });
+
+            // สร้างชุดเลข 3 หลักโดยบังคับ diversity
+            const generate3Diverse = (sorted, excludeArr, sets) => {
+                const result = [];
+                const usedDigits = new Set();
+                for (const ex of excludeArr) for (const ch of ex) usedDigits.add(ch);
+
+                const digits = sorted.map(x => x[0]);
+                for (let i = 0; i < digits.length && result.length < sets; i++) {
+                    for (let j = i + 1; j < digits.length && result.length < sets; j++) {
+                        for (let k = j + 1; k < digits.length && result.length < sets; k++) {
+                            const d1 = digits[i], d2 = digits[j], d3 = digits[k];
+                            const combo = d1 + d2 + d3;
+                            if (!excludeArr.includes(combo) &&
+                                (!usedDigits.has(d1) || !usedDigits.has(d2) || !usedDigits.has(d3))) {
+                                result.push(combo);
+                                usedDigits.add(d1); usedDigits.add(d2); usedDigits.add(d3);
                             }
                         }
                     }
                 }
-                return combinations.sort((a, b) => b.score - a.score);
+                // fallback
+                for (let i = 0; i < digits.length && result.length < sets; i++) {
+                    for (let j = i + 1; j < digits.length && result.length < sets; j++) {
+                        for (let k = j + 1; k < digits.length && result.length < sets; k++) {
+                            const combo = digits[i] + digits[j] + digits[k];
+                            if (!result.includes(combo) && !excludeArr.includes(combo)) result.push(combo);
+                        }
+                    }
+                }
+                return result;
             };
-            
-            const tail2 = generate2Digits(sortedL2, currentData.prize2Back);
-            const front3 = generate3Digits(sortedF3, currentData.prize3Front);
-            const back3 = generate3Digits(sortedB3, currentData.prize3Back);
-            
-            document.getElementById('predict1_2_1').textContent = tail2[0]?.combo || '--';
-            document.getElementById('predict1_2_2').textContent = tail2[1]?.combo || '--';
-            document.getElementById('predict1_2_3').textContent = tail2[2]?.combo || '--';
-            document.getElementById('predict1_3f_1').textContent = front3[0]?.combo || '---';
-            document.getElementById('predict1_3f_2').textContent = front3[1]?.combo || '---';
-            document.getElementById('predict1_3b_1').textContent = back3[0]?.combo || '---';
-            document.getElementById('predict1_3b_2').textContent = back3[1]?.combo || '---';
-            
-            document.getElementById('predict2_2_1').textContent = tail2[3]?.combo || '--';
-            document.getElementById('predict2_2_2').textContent = tail2[4]?.combo || '--';
-            document.getElementById('predict2_2_3').textContent = tail2[5]?.combo || '--';
-            document.getElementById('predict2_3f_1').textContent = front3[2]?.combo || '---';
-            document.getElementById('predict2_3f_2').textContent = front3[3]?.combo || '---';
-            document.getElementById('predict2_3b_1').textContent = back3[2]?.combo || '---';
-            document.getElementById('predict2_3b_2').textContent = back3[3]?.combo || '---';
+
+            const tail2   = generate2Diverse(sortedL2, currentData.prize2Back, 6);
+            const front3  = generate3Diverse(sortedF3, currentData.prize3Front, 4);
+            const back3   = generate3Diverse(sortedB3, currentData.prize3Back,  4);
+
+            document.getElementById('predict1_2_1').textContent = tail2[0] || '--';
+            document.getElementById('predict1_2_2').textContent = tail2[1] || '--';
+            document.getElementById('predict1_2_3').textContent = tail2[2] || '--';
+            document.getElementById('predict1_3f_1').textContent = front3[0] || '---';
+            document.getElementById('predict1_3f_2').textContent = front3[1] || '---';
+            document.getElementById('predict1_3b_1').textContent = back3[0]  || '---';
+            document.getElementById('predict1_3b_2').textContent = back3[1]  || '---';
+
+            document.getElementById('predict2_2_1').textContent = tail2[3] || '--';
+            document.getElementById('predict2_2_2').textContent = tail2[4] || '--';
+            document.getElementById('predict2_2_3').textContent = tail2[5] || '--';
+            document.getElementById('predict2_3f_1').textContent = front3[2] || '---';
+            document.getElementById('predict2_3f_2').textContent = front3[3] || '---';
+            document.getElementById('predict2_3b_1').textContent = back3[2]  || '---';
+            document.getElementById('predict2_3b_2').textContent = back3[3]  || '---';
         }
         
         function checkLottery() {
