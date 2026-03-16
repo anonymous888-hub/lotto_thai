@@ -71,7 +71,7 @@
                 <h1>🏆 ผลสลากกินแบ่งรัฐบาล</h1>
                 <p id="drawDate">รอสักครู่...</p>
                 <div class="status-badges">
-                    <span id="statusBadge" class="badge badge-live">🟢 อัปเดตข้อมูลล่าสุด 1 มี.ค. 2569 เรียบร้อย</span>
+                    <span id="statusBadge" class="badge badge-live">🟢 อัปเดตข้อมูลล่าสุด 16 มี.ค. 2569 เรียบร้อย</span>
                 </div>
             </div>
             <div class="prize-1">
@@ -143,7 +143,7 @@
         
         <div class="card">
             <div class="header" style="margin-bottom: 1.5rem;">
-                <h2 style="font-size: 1.8rem; color: #667eea; margin-bottom: 0.5rem; font-weight: 700;">🔮 คาดการณ์งวดหน้า (16 มี.ค. 2569)</h2>
+                <h2 style="font-size: 1.8rem; color: #667eea; margin-bottom: 0.5rem; font-weight: 700;">🔮 คาดการณ์งวดหน้า (1 เม.ย. 2569)</h2>
                 <p style="font-size: 1rem; color: #6b7280;">วิเคราะห์จากสถิติ 5 ปี</p>
             </div>
             
@@ -246,17 +246,17 @@
     <script>
         const sortNumbers = (arr) => arr.sort((a, b) => parseInt(a) - parseInt(b));
         
-        // 🔄 อัปเดตงวดวันที่ 1 มีนาคม 2569
+        // 🔄 อัปเดตงวดวันที่ 16 มีนาคม 2569
         const currentDrawData = {
-            date: "1 มีนาคม 2569",
-            prize1: "820866",
-            prize3Front: sortNumbers(["479","054"]),
-            prize3Back: sortNumbers(["068","837"]),
-            prize2Back: "06",
-            prize2: sortNumbers(["328032","716735","320227","373865","731233"]),
-            prize3: sortNumbers(["848897","255067","135646","194429","262799","085123","148874","020061","680266","140134"]),
-            prize4: sortNumbers(["323190","925072","535378","587360","491415","588075","099628","811332","467392","779499","880832","980352","848712","716797","792492","937022","813746","205964","295304","540947","127029","623450","347818","054740","907668","832799","646395","286487","380961","193102","586410","044722","047452","222751","738248","187985","757121","541290","630041","292734","332699","784679","432973","410260","113897","132045","413688","216891","411233","885962"]),
-            prize5: sortNumbers(["966248","942374","170707","047868","927971","978290","647305","930901","915138","746295","080931","625677","820038","514523","355319","499550","168204","597602","191294","369368","130650","778199","310238","602057","005234","794359","841013","934789","462043","415731","996758","802249","023809","000698","012257","833673","901478","853789","393503","713934","122622","704497","771654","796059","859020","685726","677912","060975","238233","289011","210279","249742","206129","756658","492932","393946","771529","067965","568699","406776","132441","064933","458185","211840","927715","456304","076812","792984","910398","627411","454166","841373","281712","844523","047642","922493","724127","529176","927034","263722","816941","411270","842499","787410","672686","557396","226259","194903","702405","971932","991285","818143","298748","502565","297471","101102","239806","946014","430013","237772"])
+            date: "16 มีนาคม 2569",
+            prize1: "833009",
+            prize3Front: sortNumbers(["510","983"]),
+            prize3Back: sortNumbers(["439","954"]),
+            prize2Back: "64",
+            prize2: sortNumbers(["397484","374236","179593","735523","117025"]),
+            prize3: sortNumbers(["404097","059493","577743","837597","182277","654498","138565","298749","625073","487540"]),
+            prize4: sortNumbers(["459757","201187","669082","978750","579461","311922","246777","446056","603558","555748","434858","960949","820609","565081","077905","007567","812558","954048","280129","089857","736554","324916","059485","029255","506568","797796","395110","869653","746770","503941","324346","966241","272045","850019","070451","469188","311988","180744","735221","745920","212645","092685","249388","321823","107914","139317","997677","236689","078977","675895"]),
+            prize5: sortNumbers(["476995","061436","134959","782509","837068","192312","090173","809274","426445","841507","335661","705159","599204","709068","261105","247185","054220","282835","060705","261044","032558","592181","420840","405743","966376","031227","248160","298403","069126","421239","812630","422025","142662","325318","686557","984866","217417","308776","081659","299654","129636","175727","769134","913523","842453","960056","717271","467533","263925","963508","906900","564499","358156","913334","483882","121582","983987","839524","066369","139611","312487","658083","017302","396223","918203","238719","053363","705090","797189","040017","712646","859319","022869","558370","547491","588245","499190","159666","083222","931437","977089","515904","700094","619290","878413","813220","202155","334816","664006","336209","985993","486260","918949","648647","404850","461514","724005","958669","745140","828287"])
         };
         
         const base5YearLast2 = { '0': 50, '1': 51, '2': 49, '3': 52, '4': 48, '5': 54, '6': 50, '7': 55, '8': 53, '9': 51 };
@@ -287,26 +287,20 @@
             let currentB3 = { ...base5YearBack3 };
             const recencyWeight = 3;
             
-            // คำนวณจากเลขท้าย 2 ตัวของงวดปัจจุบัน
             for (let char of data.prize2Back) {
                 currentL2[char] += recencyWeight;
             }
-            
-            // คำนวณจากเลขหน้า 3 ตัวของงวดปัจจุบัน
             for (let p of data.prize3Front) {
                 for (let char of p) {
                     currentF3[char] += recencyWeight;
                 }
             }
-            
-            // คำนวณจากเลขท้าย 3 ตัวของงวดปัจจุบัน
             for (let p of data.prize3Back) {
                 for (let char of p) {
                     currentB3[char] += recencyWeight;
                 }
             }
             
-            // เลือกเลขที่มีคะแนนสูงสุด
             const getBestDigits = (freqMap, count) => {
                 return Object.keys(freqMap).sort((a, b) => freqMap[b] - freqMap[a]).slice(0, count).join('');
             };
@@ -315,64 +309,48 @@
             document.getElementById('hot3F').textContent = getBestDigits(currentF3, 3);
             document.getElementById('hot3B').textContent = getBestDigits(currentB3, 3);
             
-            // คำนวณคาดการณ์งวดหน้า
             predictNextDraw(currentL2, currentF3, currentB3, data);
         }
         
         function predictNextDraw(scoreL2, scoreF3, scoreB3, currentData) {
-            // เรียงคะแนน
             const sortedL2 = Object.entries(scoreL2).sort((a, b) => b[1] - a[1]);
             const sortedF3 = Object.entries(scoreF3).sort((a, b) => b[1] - a[1]);
             const sortedB3 = Object.entries(scoreB3).sort((a, b) => b[1] - a[1]);
             
-            // ฟังก์ชันสร้างชุดเลข 2 ตัวที่ไม่ซ้ำ
             const generate2Digits = (sorted, exclude) => {
                 const candidates = sorted.map(x => x[0]);
                 const combinations = [];
-                
                 for (let i = 0; i < candidates.length - 1; i++) {
                     for (let j = i + 1; j < candidates.length; j++) {
                         const combo = candidates[i] + candidates[j];
                         if (combo !== exclude) {
-                            combinations.push({
-                                combo: combo,
-                                score: sorted[i][1] + sorted[j][1]
-                            });
+                            combinations.push({ combo, score: sorted[i][1] + sorted[j][1] });
                         }
                     }
                 }
-                
                 return combinations.sort((a, b) => b.score - a.score);
             };
             
-            // ฟังก์ชันสร้างชุดเลข 3 ตัวที่ไม่ซ้ำ
             const generate3Digits = (sorted, exclude) => {
                 const candidates = sorted.map(x => x[0]);
                 const combinations = [];
-                
                 for (let i = 0; i < candidates.length - 2; i++) {
                     for (let j = i + 1; j < candidates.length - 1; j++) {
                         for (let k = j + 1; k < candidates.length; k++) {
                             const combo = candidates[i] + candidates[j] + candidates[k];
                             if (!exclude.includes(combo)) {
-                                combinations.push({
-                                    combo: combo,
-                                    score: sorted[i][1] + sorted[j][1] + sorted[k][1]
-                                });
+                                combinations.push({ combo, score: sorted[i][1] + sorted[j][1] + sorted[k][1] });
                             }
                         }
                     }
                 }
-                
                 return combinations.sort((a, b) => b.score - a.score);
             };
             
-            // สร้างชุดเลขที่ไม่ซ้ำ
             const tail2 = generate2Digits(sortedL2, currentData.prize2Back);
             const front3 = generate3Digits(sortedF3, currentData.prize3Front);
             const back3 = generate3Digits(sortedB3, currentData.prize3Back);
             
-            // แสดงผลชุดที่ 1
             document.getElementById('predict1_2_1').textContent = tail2[0]?.combo || '--';
             document.getElementById('predict1_2_2').textContent = tail2[1]?.combo || '--';
             document.getElementById('predict1_2_3').textContent = tail2[2]?.combo || '--';
@@ -381,7 +359,6 @@
             document.getElementById('predict1_3b_1').textContent = back3[0]?.combo || '---';
             document.getElementById('predict1_3b_2').textContent = back3[1]?.combo || '---';
             
-            // แสดงผลชุดที่ 2
             document.getElementById('predict2_2_1').textContent = tail2[3]?.combo || '--';
             document.getElementById('predict2_2_2').textContent = tail2[4]?.combo || '--';
             document.getElementById('predict2_2_3').textContent = tail2[5]?.combo || '--';
